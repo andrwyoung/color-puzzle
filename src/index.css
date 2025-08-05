@@ -64,6 +64,7 @@
   font-display: swap;
 }
 
+/* here we import the fonts so we can use it in Tailwind */
 @theme {
   --font-header: "Sansation", sans-serif;
   --font-body: "Mulish", sans-serif;

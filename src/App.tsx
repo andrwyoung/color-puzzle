@@ -1,3 +1,5 @@
+// this is the file where you can first "see" what you code
+
 export default function App() {
   return (
     <div className="h-screen flex flex-col gap-2 items-center  justify-center bg-white">
