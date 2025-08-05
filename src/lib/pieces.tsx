@@ -1,4 +1,4 @@
-// BASIC PIECES + HELPER FUNCTIONS
+// BASIC PIECES
 
 export interface Piece {
     letter: string;

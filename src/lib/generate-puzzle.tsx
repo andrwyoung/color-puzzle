@@ -1,0 +1,82 @@
+// GENERATE A RANDOM PUZZLE USING THE DATE AS THE SEED
+
+import { PIECES } from './pieces';
+
+type Board = number[][]
+type Coordinate = [number, number]
+
+// Seeded number generator
+class SeededRandom {
+    private seed: number;
+
+    constructor(seed: number) {
+        this.seed = seed;
+    }
+
+    next(): number {
+        this.seed = (this.seed * 1664525 + 1013904223) % 4294967296; // using LCG with parameters from Numerical Recipes
+        return this.seed / 4294967296;
+    }
+
+    nextInt(min: number, max: number): number {
+        return Math.floor(this.next() * (max - min)) + min; // go from seed-generated decimal -> integer within min, max range
+    }
+}
+
+// Initialize seeded random using today's date
+function initSeededRandom(date: Date): SeededRandom {
+    const dateString = date.toISOString().split('T')[0];
+    let seed = 0;
+    for (let i =0; i < dateString.length; i++) {
+        seed = seed * 31 + dateString.charCodeAt(i);
+    }
+    return new SeededRandom(seed);
+}
+
+// Create shuffled array using Fisher Yates, seeded random
+function shuffleArray<T>(array: T[], random: SeededRandom): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = random.nextInt(0, i + 1);
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+// Create empty board (5x11)
+function createEmptyBoard(): Board {
+    return Array.from({ length: 5 }, () => Array(11).fill(0));
+}
+
+// TO-DO: VALID PIECE PLACEMENTS LOGIC
+/*
+1. Check valid piece placement.
+(2. Place piece)
+(3. Remove piece)
+*/
+
+// TO-DO: SHUFFLE VARIATIONS
+
+// TO-DO: SOLVE BACKWARDS
+/* 
+Flow:
+1. Shuffle the piece IDs -> this is the order in which pieces are placed.
+2. For each piece:
+    a. (First, shuffle the variations -> this is the order in which variations (aka flips, rotations) are tested)
+    aa. Convert from relative to absolute coordinates. ??? (this may need to happen earlier)
+    b. Place it on the board.
+    c. Check if it's valid.
+    d. If so, move on to the next piece.
+    e. If not, try the next position. Return to step d.
+    f. If the above don't work, then try next variation from the first valid position. Repeat b. - e.; try all positions for a variation.
+    g. If all options are exhausted, remove the previous piece. Make the needed position/variation change, then continue.
+    h. Mathematically, some arbitrary solution will be reached.
+3. Check if the board is complete (automatically when final piece placed). If so, this is the solution.
+*/
+
+//TO-DO: WRAPPER
+/* 
+1. Generate a solved board.
+2. Print it.
+3. (Store it somewhere)
+*/
