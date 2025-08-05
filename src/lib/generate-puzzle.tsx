@@ -1,7 +1,7 @@
 // GENERATE A RANDOM PUZZLE USING THE DATE AS THE SEED
 
 import { PIECES } from './pieces';
-import { Board, Coordinate, BOARD_ROWS, BOARD_COLS } from '../types/board.ts';
+import { type Board, type Coordinate, BOARD_ROWS, BOARD_COLS } from '../types/board.ts';
 
 // Seeded number generator
 const MODULUS = 2 ** 32
@@ -34,7 +34,7 @@ export function initSeededRandomWithDate(date: Date) {
 }
 
 // Create shuffled array using Fisher Yates, seeded random
-function shuffleArray<T>(array: T[], random: ReturnType<typeof createSeededRandom>): T[] {
+export function shuffleArray<T>(array: T[], random: ReturnType<typeof createSeededRandom>): T[] {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = random.nextInt(0, i + 1);
@@ -44,8 +44,8 @@ function shuffleArray<T>(array: T[], random: ReturnType<typeof createSeededRando
 }
 
 // Create empty board (5x11)
-function createEmptyBoard(): Board {
-    return Array.from({ length: 5 }, () => Array(11).fill(0));
+export function createEmptyBoard(): Board {
+    return Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(0));
 }
 
 // TO-DO: VALID PIECE PLACEMENTS LOGIC
