@@ -13,7 +13,7 @@ export interface PieceCollection {
 }
 
 // 12 pieces total,
-// coordinates: [row, column], starting from the top left. ie: upper left corner = [0,0], the one to its right = [1,0], etc,
+// coordinates: [column, row], starting from the top left. ie: upper left corner = [0,0], the one to its right = [1,0], etc,
 // base: rotations, flips (probably) make more sense geometrically,
 // variations: fully spelled out makes it easier for puzzle generation.
 export const PIECES: PieceCollection = {
