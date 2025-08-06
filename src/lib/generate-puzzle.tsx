@@ -1,6 +1,7 @@
 // GENERATE A RANDOM PUZZLE USING THE DATE AS THE SEED
 
-import { BOARD_ROWS, BOARD_COLS, type Board } from "../types/board.ts";
+import { BOARD_ROWS, BOARD_COLS } from './constants/board.ts';
+import type { Board } from '../types/board-and-piece-types.ts';
 
 // Seeded number generator
 const MODULUS = 2 ** 32;
@@ -8,28 +9,28 @@ const MULTIPLIER = 1664525;
 const INCREMENT = 1013904223;
 
 export function createSeededRandom(seed: number) {
-  let currentSeed = seed;
-
-  const next = () => {
-    currentSeed = (currentSeed * MULTIPLIER + INCREMENT) % MODULUS;
-    return currentSeed / MODULUS;
-  };
-
-  const nextInt = (min: number, max: number) => {
-    return Math.floor(next() * (max - min)) + min;
-  };
-
-  return { next, nextInt };
-}
+    let currentSeed = seed;
+  
+    const next = () => {
+      currentSeed = (currentSeed * MULTIPLIER + INCREMENT) % MODULUS;
+      return currentSeed / MODULUS;
+    };
+  
+    const nextInt = (min: number, max: number) => {
+      return Math.floor(next() * (max - min)) + min;
+    };
+  
+    return { next, nextInt };
+  }
 
 // Initialize seeded random using today's date
 export function initSeededRandomWithDate(date: Date) {
   const dateString = date.toISOString().split("T")[0];
-  let seed = 0;
+    let seed = 0;
   for (let i = 0; i < dateString.length; i++) {
-    seed = seed * 31 + dateString.charCodeAt(i);
-  }
-  return createSeededRandom(seed);
+        seed = seed * 31 + dateString.charCodeAt(i);
+    }
+    return createSeededRandom(seed);
 }
 
 // Create shuffled array using Fisher Yates, seeded random
@@ -37,17 +38,17 @@ export function shuffleArray<T>(
   array: T[],
   random: ReturnType<typeof createSeededRandom>
 ): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = random.nextInt(0, i + 1);
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = random.nextInt(0, i + 1);
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
 }
 
 // Create empty board (5x11)
 export function createEmptyBoard(): Board {
-  return Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(0));
+    return Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(0));
 }
 
 // TO-DO: VALID PIECE PLACEMENTS LOGIC

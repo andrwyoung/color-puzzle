@@ -1,6 +1,7 @@
 // LOGIC FOR PLACING, REMOVING PIECES AND VALIDATING PLACEMENT
 
-import { BOARD_ROWS, BOARD_COLS, type Board, type Coordinate } from '../types/board.ts';
+import type { Board, Coordinate } from '../types/board-and-piece-types.ts';
+import { BOARD_ROWS, BOARD_COLS } from  './constants/board.ts';
 
 // Validate if a piece can be placed at the given position
 export function isValidPlacement(
