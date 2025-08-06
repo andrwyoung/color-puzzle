@@ -1,11 +1,11 @@
 // LOGIC FOR PLACING, REMOVING PIECES AND VALIDATING PLACEMENT
 
-import type { Board, Coordinate } from "../types/puzzle-types.ts";
-import { BOARD_ROWS, BOARD_COLS } from "./constants/board.ts";
+import type { BoardType, Coordinate } from "../types/puzzle-types.ts";
+import { BOARD_ROWS, BOARD_COLS } from "./constants/board-constants.ts";
 
 // Validate if a piece can be placed at the given position
 export function isValidPlacement(
-  board: Board,
+  board: BoardType,
   pieceCoordinates: Coordinate[],
   startRow: number,
   startCol: number
@@ -25,7 +25,7 @@ export function isValidPlacement(
 }
 
 // Test if there is an unfillable gap
-export function hasUnfillableGaps(board: Board): boolean {
+export function hasUnfillableGaps(board: BoardType): boolean {
   const visited = Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false)); // Create Boolean 5x11 grid of false
 
   for (let row = 0; row < BOARD_ROWS; row++) {
@@ -39,7 +39,7 @@ export function hasUnfillableGaps(board: Board): boolean {
   return false;
 }
 
-export function floodFillCount(board: Board, visited: boolean[][], row: number, col: number): number {
+export function floodFillCount(board: BoardType, visited: boolean[][], row: number, col: number): number {
   if (row < 0 || row >= BOARD_ROWS || col < 0 || col >= BOARD_COLS || visited[row][col] || board[row][col] !== 0) {
     return 0;
   } // Cells or sections that are out of bounds, already visited, or not empty.
@@ -56,7 +56,7 @@ export function floodFillCount(board: Board, visited: boolean[][], row: number, 
 
 // 'Place' piece - update board array to have placed piece ID at specified coordinates
 export function placePiece(
-  board: Board,
+  board: BoardType,
   pieceCoordinates: Coordinate[],
   startRow: number,
   startCol: number,
@@ -69,7 +69,7 @@ export function placePiece(
 
 // 'Remove' piece - targetted remove using anchor coordinate, specific piece/variation as parameter for now
 export function removePieceByCoord(
-  board: Board,
+  board: BoardType,
   pieceCoordinates: Coordinate[], // this assumes a known (stored) variation
   startRow: number,
   startCol: number

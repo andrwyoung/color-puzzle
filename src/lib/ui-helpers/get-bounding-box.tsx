@@ -1,3 +1,5 @@
+// what is the bounding box that wraps each piece look like?
+
 import type { Coordinate } from "../../types/puzzle-types";
 
 export function getBoundingBox(variation: Coordinate[]) {

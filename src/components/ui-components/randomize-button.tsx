@@ -1,8 +1,10 @@
-import type { Dispatch, SetStateAction } from "react";
-import { BOARD_COLS, BOARD_ROWS } from "../../lib/constants/board";
-import type { Board } from "../../types/puzzle-types";
+// random debugging button
 
-export default function RandomizeButton({ setBoard }: { setBoard: Dispatch<SetStateAction<Board>> }) {
+import type { Dispatch, SetStateAction } from "react";
+import { BOARD_COLS, BOARD_ROWS } from "../../lib/constants/board-constants";
+import type { BoardType } from "../../types/puzzle-types";
+
+export default function RandomizeButton({ setBoard }: { setBoard: Dispatch<SetStateAction<BoardType>> }) {
   const randomizeBoard = () => {
     setBoard(() =>
       Array.from({ length: BOARD_ROWS }, () =>

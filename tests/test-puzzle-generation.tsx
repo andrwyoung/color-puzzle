@@ -1,12 +1,12 @@
 // TESTS FOR GENERATE PUZZLE
 import { generateDailyPuzzle, printBoard } from "../src/lib/generate-puzzle";
 
-interface TestResult {
+type TestResult = {
   attempt: number;
   date: string;
   duration: string;
   success: boolean;
-}
+};
 
 function testSinglePuzzle(testDate: Date, attemptNumber: number): TestResult {
   const startTime = performance.now();

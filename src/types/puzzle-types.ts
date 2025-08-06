@@ -1,24 +1,24 @@
 // PUZZLE TYPES
 
-export type Board = number[][];
+export type BoardType = number[][];
 
 export type Coordinate = [number, number];
 
-export interface Piece {
+export type PieceType = {
   letter: string;
   color: string;
   base: number[][];
   variations: Coordinate[][];
   url?: string;
-}
+};
 
-export interface PieceCollection {
-  [key: number]: Piece;
-}
+export type PieceCollection = {
+  [key: number]: PieceType;
+};
 
-export interface PuzzleData {
-  startingBoard: Board;
-  solution: Board;
+export type PuzzleData = {
+  startingBoard: BoardType;
+  solution: BoardType;
   fixedPieces: number[];
   removablePieces: number[];
-}
+};
