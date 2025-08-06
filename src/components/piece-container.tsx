@@ -15,7 +15,7 @@ export default function PieceContainer() {
         const { width, height } = getBoundingBox(variation);
 
         return (
-          <DraggablePiece id={id} key={id}>
+          <DraggablePiece id={id} variation={variation} color={piece.color} key={id}>
             <div
               className="relative"
               style={{
