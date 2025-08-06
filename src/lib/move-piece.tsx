@@ -22,6 +22,35 @@ export function isValidPlacement(
     });
 }
 
+// Test if there is an unfillable gap
+export function hasUnfillableGaps(board: Board): boolean {
+    const visited = Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false)); // Create Boolean 5x11 grid of false
+    
+    for (let row = 0; row < BOARD_ROWS; row++) {
+        for (let col = 0; col < BOARD_COLS; col++) {
+            if (board[row][col] === 0 && !visited[row][col]) {
+            const regionSize = floodFillCount(board, visited, row, col);
+            if (regionSize <= 2) return true; // 1 or 2 square gaps = unfillable
+            }
+        }
+    }
+    return false;
+}
+  
+export function floodFillCount(board: Board, visited: boolean[][], row: number, col: number): number {
+    if (row < 0 || row >= BOARD_ROWS || col < 0 || col >= BOARD_COLS || 
+        visited[row][col] || board[row][col] !== 0) {
+        return 0;
+    } // Cells or sections that are out of bounds, already visited, or not empty.
+
+    visited[row][col] = true;
+    return 1 + 
+        floodFillCount(board, visited, row - 1, col) +
+        floodFillCount(board, visited, row + 1, col) +
+        floodFillCount(board, visited, row, col - 1) +
+        floodFillCount(board, visited, row, col + 1);
+}
+
 // 'Place' piece - update board array to have placed piece ID at specified coordinates
 export function placePiece(
     board: Board,
@@ -35,7 +64,6 @@ export function placePiece(
     });
 }
 
-// TO-DO: DISCUSS WITH @ANDREW ABOUT PIECE PLACEMENT AND STATE TRACKING
 // 'Remove' piece - targetted remove using anchor coordinate, specific piece/variation as parameter for now
 export function removePieceByCoord(
     board: Board,
@@ -47,60 +75,3 @@ export function removePieceByCoord(
         board[startRow + row][startCol + col] = 0
     });
 }
-
-
-
-// TESTS - note: don't know where to put these, but keeping here for now
-const testBoard = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-];
-
-const testboard1 = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-    [22, 0, 33, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-];
-
-const testPiece = [[0,0], [1,0]] as Coordinate[]; // 2-block vertical piece
-
-// Log board 
-function printBoard(board: Board): void {
-    board.forEach(row => {
-        console.log(row.map(cell => cell.toString().padStart(2, ' ')).join(' '));
-    });
-    console.log(''); // Empty line for spacing
-}
-
-// Check if boards are identical
-function boardsEqual(board1: Board, board2: Board): boolean {
-    return board1.every((row, i) => 
-        row.every((cell, j) => cell === board2[i][j])
-    );
-}
-
-// Test place, remove piece
-console.log('Testing place, remove piece')
-
-placePiece(testBoard, testPiece, 1, 0, 22); //arbitrary id
-placePiece(testBoard, testPiece, 2, 2, 33); 
-
-console.log('Should be TRUE:', boardsEqual(testBoard, testboard1));
-printBoard(testBoard)
-
-removePieceByCoord(testBoard, testPiece, 2, 2);
-
-console.log('Removed piece, should be FALSE:', boardsEqual(testBoard, testboard1));
-printBoard(testBoard)
-
-// Test isValidPlacement
-console.log('Testing isValidPlacement')
-console.log('Should be FALSE (hits piece1):', isValidPlacement(testBoard, testPiece, 0, 0));
-console.log('Should be TRUE (empty spot):', isValidPlacement(testBoard, testPiece, 0, 3));  
-console.log('Should be FALSE (out of bounds):', isValidPlacement(testBoard, testPiece, 4, 0));
-console.log('Should be FALSE (off right edge):', isValidPlacement(testBoard, testPiece, 0, 11));

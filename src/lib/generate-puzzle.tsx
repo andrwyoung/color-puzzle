@@ -1,7 +1,9 @@
 // GENERATE A RANDOM PUZZLE USING THE DATE AS THE SEED
 
 import { BOARD_ROWS, BOARD_COLS } from './constants/board.ts';
-import type { Board } from '../types/board-and-piece-types.ts';
+import { PIECES } from './constants/pieces.ts';
+import type { Board, Coordinate } from '../types/puzzle-types.ts';
+import { isValidPlacement, hasUnfillableGaps, placePiece, removePieceByCoord } from './move-piece.tsx';
 
 // Seeded number generator
 const MODULUS = 2 ** 32;
@@ -46,40 +48,113 @@ export function shuffleArray<T>(
     return shuffled;
 }
 
+// Shuffle array of variations for a piece
+export function shuffleVariations(
+    pieceId: number, 
+    random: ReturnType<typeof createSeededRandom>
+): Coordinate[][] {
+    const piece = PIECES[pieceId];
+    return shuffleArray(piece.variations, random);
+}
+
 // Create empty board (5x11)
 export function createEmptyBoard(): Board {
     return Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(0));
 }
 
-// TO-DO: VALID PIECE PLACEMENTS LOGIC
-/*
-1. Check valid piece placement.
-(2. Place piece)
-(3. Remove piece)
-*/
+// For a given board and piece variation, return array of valid placement positions (anchor coords)
+export function findValidPositions(board: Board, pieceCoordinates: Coordinate[]): Coordinate[] {
+    const validPositions: Coordinate[] = [];
 
-// TO-DO: SHUFFLE VARIATIONS
+    for (let row = 0; row < 5; row++){
+        for (let col = 0; col < 11; col++) {
+            if (isValidPlacement(board, pieceCoordinates, row, col)) {
+                validPositions.push([row, col]);
+            }
+        }
+    }
 
-// TO-DO: SOLVE BACKWARDS
-/* 
-Flow:
-1. Shuffle the piece IDs -> this is the order in which pieces are placed.
-2. For each piece:
-    a. (First, shuffle the variations -> this is the order in which variations (aka flips, rotations) are tested)
-    aa. Convert from relative to absolute coordinates. ??? (this may need to happen earlier)
-    b. Place it on the board.
-    c. Check if it's valid.
-    d. If so, move on to the next piece.
-    e. If not, try the next position. Return to step d.
-    f. If the above don't work, then try next variation from the first valid position. Repeat b. - e.; try all positions for a variation.
-    g. If all options are exhausted, remove the previous piece. Make the needed position/variation change, then continue.
-    h. Mathematically, some arbitrary solution will be reached.
-3. Check if the board is complete (automatically when final piece placed). If so, this is the solution.
-*/
+    return validPositions
+} 
 
-//TO-DO: WRAPPER
-/* 
-1. Generate a solved board.
-2. Print it.
-3. (Store it somewhere)
-*/
+// Recursive function to solve 
+export function solveBoardStep(
+    board: Board,
+    shuffledPieceIds: number[], // Array of piece IDs. This is the order that pieces are placed during solving.
+    pieceIndex: number, // Because am calling recursively, need to track how many pieces have been placed
+    random: ReturnType<typeof createSeededRandom>
+): boolean {
+
+    // Check: are all pieces placed? True = solved.
+    if (pieceIndex >= shuffledPieceIds.length) {
+        return true; 
+    }
+
+    // Select appropriate piece from array + shuffle variations
+    const currentPieceId = shuffledPieceIds[pieceIndex];
+    const shuffledVariations = shuffleVariations(currentPieceId, random);
+
+    // For each variation, try the set of valid positions in a random order
+    for (const variation of shuffledVariations) {
+        const validPositions = findValidPositions(board, variation);
+        const shuffledValidPositions = shuffleArray(validPositions, random);
+
+         // Call solveBoardStep for the next piece in the list of pieces, and repeat process.
+         for (const [startRow, startCol] of shuffledValidPositions) {
+            placePiece(board, variation, startRow, startCol, currentPieceId);
+
+            if (hasUnfillableGaps(board)) {
+                removePieceByCoord(board, variation, startRow, startCol);
+                continue;
+            }
+
+            if (solveBoardStep(board, shuffledPieceIds, pieceIndex + 1, random)) {
+                return true; // This will recursively call, and only return true when opening clause returns true @ pieceIndex >= 12
+            }
+
+            removePieceByCoord(board, variation, startRow, startCol);
+        }
+    }
+
+    return false;  // No solution for this configuration of pieces
+}
+
+// Tie it all together, generate a solved board with random seed
+export function generateSolvedBoard(date: Date = new Date()): Board | null {
+    const random = initSeededRandomWithDate(date);
+    const board = createEmptyBoard();
+
+    const pieceIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const shuffledPieceIds = shuffleArray(pieceIds, random);
+
+    const successfullySolved = solveBoardStep(board, shuffledPieceIds, 0, random); // Reminder: returns boolean if board is solved
+
+    return successfullySolved ? board : null; // Reminder: places pieces on board while solving
+}
+
+// Print board
+export function printBoard(board: Board): void {
+    board.forEach(row => {
+        console.log(row.map(cell => cell || '.').join(' '));
+    });
+}
+
+// Verify board is filled (just in case)
+export function isBoardComplete(board: Board): boolean {
+    return board.every(row => row.every(cell => cell !== 0));
+}
+
+// Generate today's puzzle
+export function generateDailyPuzzle(date: Date = new Date()): Board {
+    const solution = generateSolvedBoard(date);
+
+    if (!solution) {
+        throw new Error(`Failed to generate puzzle for date: ${date.toISOString()}`);
+    }
+
+    if (!isBoardComplete(solution)) {
+        throw new Error('Generated solution is incorrect.')
+    }
+
+    return solution;
+}
