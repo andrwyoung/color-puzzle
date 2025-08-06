@@ -4,6 +4,7 @@
 import { PIECES } from "../lib/constants/pieces";
 import { CELL_SIZE } from "../lib/constants/ui";
 import { getBoundingBox } from "../lib/ui-helpers/get-bounding-box";
+import { DraggablePiece } from "./drag-and-drop/draggable-piece";
 import { Piece } from "./piece";
 
 export default function PieceContainer() {
@@ -14,20 +15,21 @@ export default function PieceContainer() {
         const { width, height } = getBoundingBox(variation);
 
         return (
-          <div
-            key={id}
-            className="relative"
-            style={{
-              width: width * CELL_SIZE,
-              height: height * CELL_SIZE
-            }}
-          >
-            <Piece
-              variation={variation}
-              anchor={[0, 0]} // top-left anchor for layout
-              color={piece.color}
-            />
-          </div>
+          <DraggablePiece id={id} key={id}>
+            <div
+              className="relative"
+              style={{
+                width: width * CELL_SIZE,
+                height: height * CELL_SIZE
+              }}
+            >
+              <Piece
+                variation={variation}
+                anchor={[0, 0]} // top-left anchor for layout
+                color={piece.color}
+              />
+            </div>
+          </DraggablePiece>
         );
       })}
     </div>

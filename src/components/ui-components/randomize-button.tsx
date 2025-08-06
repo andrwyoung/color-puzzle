@@ -1,11 +1,8 @@
 import type { Dispatch, SetStateAction } from "react";
 import { BOARD_COLS, BOARD_ROWS } from "../../lib/constants/board";
+import type { Board } from "../../types/puzzle-types";
 
-type Props = {
-  setBoard: Dispatch<SetStateAction<(number | null)[][]>>;
-};
-
-export default function RandomizeButton({ setBoard }: Props) {
+export default function RandomizeButton({ setBoard }: { setBoard: Dispatch<SetStateAction<Board>> }) {
   const randomizeBoard = () => {
     setBoard(() =>
       Array.from({ length: BOARD_ROWS }, () =>
