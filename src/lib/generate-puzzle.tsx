@@ -1,40 +1,40 @@
 // GENERATE A RANDOM PUZZLE USING THE DATE AS THE SEED
 
 import { PIECES } from './pieces';
-
-type Board = number[][]
-type Coordinate = [number, number]
+import { type Board, type Coordinate, BOARD_ROWS, BOARD_COLS } from '../types/board.ts';
 
 // Seeded number generator
-class SeededRandom {
-    private seed: number;
+const MODULUS = 2 ** 32
+const MULTIPLIER = 1664525
+const INCREMENT = 1013904223
 
-    constructor(seed: number) {
-        this.seed = seed;
-    }
-
-    next(): number {
-        this.seed = (this.seed * 1664525 + 1013904223) % 4294967296; // using LCG with parameters from Numerical Recipes
-        return this.seed / 4294967296;
-    }
-
-    nextInt(min: number, max: number): number {
-        return Math.floor(this.next() * (max - min)) + min; // go from seed-generated decimal -> integer within min, max range
-    }
-}
+export function createSeededRandom(seed: number) {
+    let currentSeed = seed;
+  
+    const next = () => {
+      currentSeed = (currentSeed * MULTIPLIER + INCREMENT) % MODULUS;
+      return currentSeed / MODULUS;
+    };
+  
+    const nextInt = (min: number, max: number) => {
+      return Math.floor(next() * (max - min)) + min;
+    };
+  
+    return { next, nextInt };
+  }
 
 // Initialize seeded random using today's date
-function initSeededRandom(date: Date): SeededRandom {
+export function initSeededRandomWithDate(date: Date) {
     const dateString = date.toISOString().split('T')[0];
     let seed = 0;
     for (let i =0; i < dateString.length; i++) {
         seed = seed * 31 + dateString.charCodeAt(i);
     }
-    return new SeededRandom(seed);
+    return createSeededRandom(seed);
 }
 
 // Create shuffled array using Fisher Yates, seeded random
-function shuffleArray<T>(array: T[], random: SeededRandom): T[] {
+export function shuffleArray<T>(array: T[], random: ReturnType<typeof createSeededRandom>): T[] {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = random.nextInt(0, i + 1);
@@ -44,8 +44,8 @@ function shuffleArray<T>(array: T[], random: SeededRandom): T[] {
 }
 
 // Create empty board (5x11)
-function createEmptyBoard(): Board {
-    return Array.from({ length: 5 }, () => Array(11).fill(0));
+export function createEmptyBoard(): Board {
+    return Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(0));
 }
 
 // TO-DO: VALID PIECE PLACEMENTS LOGIC
