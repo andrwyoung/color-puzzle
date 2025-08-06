@@ -11,10 +11,7 @@ export default function Board() {
   const randomizeBoard = () => {
     setCurrentBoard(() =>
       Array.from({ length: BOARD_ROWS }, () =>
-        Array.from(
-          { length: BOARD_COLS },
-          () => Math.floor(Math.random() * 12) + 1
-        )
+        Array.from({ length: BOARD_COLS }, () => Math.floor(Math.random() * 12) + 1)
       )
     );
   };
@@ -37,7 +34,7 @@ export default function Board() {
                 width: CELL_SIZE,
                 height: CELL_SIZE,
                 backgroundColor: getPieceColor(cell),
-                borderRadius: 6, // Tailwind's `rounded-lg` is ~6px
+                borderRadius: 6 // Tailwind's `rounded-lg` is ~6px
               }}
               data-row={rowIndex}
               data-col={colIndex}

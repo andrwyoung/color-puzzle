@@ -1,10 +1,12 @@
 // 12 BASIC PIECES
 
-import type { PieceCollection } from '../../types/puzzle-types.ts';
+import type { PieceCollection } from "../../types/puzzle-types.ts";
 
 // coordinates: [row, column], starting from the top left. ie: upper left corner = [0,0], the one to its right = [0,1], etc,
 // base: rotations, flips (probably) make more sense to compute geometrically,
 // variations: fully spelled out makes it easier for puzzle generation.
+
+// prettier-ignore
 export const PIECES: PieceCollection = {
     1: {
         letter: 'A', // Orange L - 4

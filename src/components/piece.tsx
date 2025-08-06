@@ -4,7 +4,7 @@ import { type Coordinate } from "../types/puzzle-types";
 export function Piece({
   variation,
   anchor,
-  color,
+  color
 }: {
   variation: Coordinate[];
   anchor: [number, number];
@@ -24,7 +24,7 @@ export function Piece({
               left,
               width: CELL_SIZE,
               height: CELL_SIZE,
-              backgroundColor: color,
+              backgroundColor: color
             }}
           />
         );
