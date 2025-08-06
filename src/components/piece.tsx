@@ -1,3 +1,5 @@
+// this is what a piece looks like when it's not yet placed on the board
+
 import { CELL_SIZE } from "../lib/constants/ui";
 import { type Coordinate } from "../types/puzzle-types";
 
