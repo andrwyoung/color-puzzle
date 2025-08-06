@@ -1,15 +1,15 @@
 // this is the 5x11 board you see on the screen
 
-import { CELL_SIZE } from "../lib/constants/ui";
+import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { getPieceColor } from "../lib/ui-helpers/get-piece-color";
-import type { Board } from "../types/puzzle-types";
+import type { BoardType } from "../types/puzzle-types";
 import { DroppableBoard } from "./drag-and-drop/droppable-board";
 
 export default function GameBoard({
   currentBoard,
   highlightedCells
 }: {
-  currentBoard: Board;
+  currentBoard: BoardType;
   highlightedCells: boolean[][];
 }) {
   return (

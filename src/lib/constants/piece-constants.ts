@@ -7,7 +7,7 @@ import type { PieceCollection } from "../../types/puzzle-types.ts";
 // variations: fully spelled out makes it easier for puzzle generation.
 
 // prettier-ignore
-export const PIECES: PieceCollection = {
+export const ALL_PIECES: PieceCollection = {
     1: {
         letter: 'A', // Orange L - 4
         color: "#f7941d",

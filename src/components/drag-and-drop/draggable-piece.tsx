@@ -1,4 +1,4 @@
-// this is the wrapper that makes something able to be dragged around on screen!
+// this is the wrapper that makes a piece able to be dragged around on screen!
 
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";

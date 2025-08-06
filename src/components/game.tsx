@@ -2,17 +2,17 @@
 // it holds the board and the pieces, and how they all move around
 
 import { useState } from "react";
-import { BOARD_COLS, BOARD_ROWS } from "../lib/constants/board.ts";
+import { BOARD_COLS, BOARD_ROWS } from "../lib/constants/board-constants.ts";
 import RandomizeButton from "./ui-components/randomize-button.tsx";
 import PieceContainer from "./piece-container.tsx";
 import { DndContext, type DragMoveEvent, type DragStartEvent } from "@dnd-kit/core";
 import GameBoard from "./game-board.tsx";
-import type { Board } from "../types/puzzle-types.ts";
-import { CELL_SIZE } from "../lib/constants/ui.ts";
+import type { BoardType } from "../types/puzzle-types.ts";
+import { CELL_SIZE } from "../lib/constants/ui-constants.ts";
 
 export default function Board() {
   // this is the actual game board
-  const [currentBoard, setCurrentBoard] = useState<Board>(() =>
+  const [currentBoard, setCurrentBoard] = useState<BoardType>(() =>
     Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(0))
   );
 

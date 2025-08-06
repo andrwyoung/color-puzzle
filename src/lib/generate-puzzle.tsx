@@ -1,9 +1,9 @@
 // GENERATE A RANDOM PUZZLE USING THE DATE AS THE SEED
 // TO-DO: NEED TO CREATE REVEAL HINT HELPER FUNCTION
 
-import { BOARD_ROWS, BOARD_COLS } from "./constants/board.ts";
-import { PIECES, ALL_PIECE_IDS } from "./constants/pieces.ts";
-import type { Board, Coordinate, PuzzleData } from "../types/puzzle-types.ts";
+import { BOARD_ROWS, BOARD_COLS } from "./constants/board-constants.ts";
+import { ALL_PIECES, ALL_PIECE_IDS } from "./constants/piece-constants.ts";
+import type { BoardType, Coordinate, PuzzleData } from "../types/puzzle-types.ts";
 import { isValidPlacement, hasUnfillableGaps, placePiece, removePieceByCoord } from "./move-piece.tsx";
 
 // Seeded number generator
@@ -48,17 +48,17 @@ export function shuffleArray<T>(array: T[], random: ReturnType<typeof createSeed
 
 // Shuffle array of variations for a piece
 export function shuffleVariations(pieceId: number, random: ReturnType<typeof createSeededRandom>): Coordinate[][] {
-  const piece = PIECES[pieceId];
+  const piece = ALL_PIECES[pieceId];
   return shuffleArray(piece.variations, random);
 }
 
 // Create empty board (5x11)
-export function createEmptyBoard(): Board {
+export function createEmptyBoard(): BoardType {
   return Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(0));
 }
 
 // For a given board and piece variation, return array of valid placement positions (anchor coords)
-export function findValidPositions(board: Board, pieceCoordinates: Coordinate[]): Coordinate[] {
+export function findValidPositions(board: BoardType, pieceCoordinates: Coordinate[]): Coordinate[] {
   const validPositions: Coordinate[] = [];
 
   for (let row = 0; row < 5; row++) {
@@ -74,7 +74,7 @@ export function findValidPositions(board: Board, pieceCoordinates: Coordinate[])
 
 // Recursive function to solve
 export function solveBoardStep(
-  board: Board,
+  board: BoardType,
   shuffledPieceIds: number[], // Array of piece IDs. This is the order that pieces are placed during solving.
   pieceIndex: number, // Because am calling recursively, need to track how many pieces have been placed
   random: ReturnType<typeof createSeededRandom>
@@ -114,7 +114,7 @@ export function solveBoardStep(
 }
 
 // Tie it all together, generate a solved board with random seed
-export function generateSolvedBoard(date: Date = new Date()): Board | null {
+export function generateSolvedBoard(date: Date = new Date()): BoardType | null {
   const random = initSeededRandomWithDate(date);
   const board = createEmptyBoard();
 
@@ -127,7 +127,10 @@ export function generateSolvedBoard(date: Date = new Date()): Board | null {
 }
 
 // Create puzzle from solved board
-export function createPuzzleFromSolution(solution: Board, random: ReturnType<typeof createSeededRandom>): PuzzleData {
+export function createPuzzleFromSolution(
+  solution: BoardType,
+  random: ReturnType<typeof createSeededRandom>
+): PuzzleData {
   const allPieceIds = ALL_PIECE_IDS;
   const shuffledPieceIds = shuffleArray(allPieceIds, random);
   const fixedPieces = shuffledPieceIds.slice(0, 2);
@@ -156,14 +159,14 @@ export function createPuzzleFromSolution(solution: Board, random: ReturnType<typ
 }
 
 // Print board
-export function printBoard(board: Board): void {
+export function printBoard(board: BoardType): void {
   board.forEach(row => {
     console.log(row.map(cell => cell || ".").join(" "));
   });
 }
 
 // Verify board is filled (just in case)
-export function isBoardComplete(board: Board): boolean {
+export function isBoardComplete(board: BoardType): boolean {
   return board.every(row => row.every(cell => cell !== 0));
 }
 

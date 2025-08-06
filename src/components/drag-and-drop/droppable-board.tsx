@@ -1,3 +1,5 @@
+// this is the wrapper that makes the board able to be dropped in to
+
 import { useDroppable } from "@dnd-kit/core";
 import React from "react";
 

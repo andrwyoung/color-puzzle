@@ -1,8 +1,8 @@
 // this is the rectangle that "holds" the pieces when they are not
 // yet placed on the board
 
-import { PIECES } from "../lib/constants/pieces";
-import { CELL_SIZE } from "../lib/constants/ui";
+import { ALL_PIECES } from "../lib/constants/piece-constants";
+import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { getBoundingBox } from "../lib/ui-helpers/get-bounding-box";
 import { DraggablePiece } from "./drag-and-drop/draggable-piece";
 import { Piece } from "./piece";
@@ -10,7 +10,7 @@ import { Piece } from "./piece";
 export default function PieceContainer() {
   return (
     <div className="flex flex-wrap gap-4 bg-gray-100 p-4">
-      {Object.entries(PIECES).map(([id, piece]) => {
+      {Object.entries(ALL_PIECES).map(([id, piece]) => {
         const variation = piece.variations[0]; // pick first variation for now
         const { width, height } = getBoundingBox(variation);
 
