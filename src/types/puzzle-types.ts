@@ -1,4 +1,4 @@
-// BOARD, PIECE TYPES
+// PUZZLE TYPES
 
 export type Board = number[][];
 
@@ -14,4 +14,11 @@ export interface Piece {
 
 export interface PieceCollection {
     [key: number]: Piece;
+}
+
+export interface PuzzleData {
+    startingBoard: Board;
+    solution: Board;
+    fixedPieces: number[];
+    removablePieces: number[];
 }

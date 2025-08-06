@@ -1,8 +1,9 @@
 // GENERATE A RANDOM PUZZLE USING THE DATE AS THE SEED
+// TO-DO: NEED TO CREATE REVEAL HINT HELPER FUNCTION
 
 import { BOARD_ROWS, BOARD_COLS } from './constants/board.ts';
-import { PIECES } from './constants/pieces.ts';
-import type { Board, Coordinate } from '../types/puzzle-types.ts';
+import { PIECES, ALL_PIECE_IDS } from './constants/pieces.ts';
+import type { Board, Coordinate, PuzzleData, RemovedPiece } from '../types/puzzle-types.ts';
 import { isValidPlacement, hasUnfillableGaps, placePiece, removePieceByCoord } from './move-piece.tsx';
 
 // Seeded number generator
@@ -124,12 +125,44 @@ export function generateSolvedBoard(date: Date = new Date()): Board | null {
     const random = initSeededRandomWithDate(date);
     const board = createEmptyBoard();
 
-    const pieceIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const pieceIds = ALL_PIECE_IDS;
     const shuffledPieceIds = shuffleArray(pieceIds, random);
 
-    const successfullySolved = solveBoardStep(board, shuffledPieceIds, 0, random); // Reminder: returns boolean if board is solved
+    const success = solveBoardStep(board, shuffledPieceIds, 0, random); // Reminder: returns boolean if board is solved
 
-    return successfullySolved ? board : null; // Reminder: places pieces on board while solving
+    return success ? board : null; // Reminder: places pieces on board while solving
+}
+
+// Create puzzle from solved board
+export function createPuzzleFromSolution(
+    solution: Board,
+    random: ReturnType<typeof createSeededRandom>,
+): PuzzleData {
+    const allPieceIds = ALL_PIECE_IDS;
+    const shuffledPieceIds = shuffleArray(allPieceIds, random);
+    const fixedPieces = shuffledPieceIds.slice(0, 2);
+    const removablePieces = shuffledPieceIds.slice(2);
+
+    // Create starting board (deep copy)
+    const startingBoard = solution.map(row => [...row]);
+
+    // Remove pieces
+    removablePieces.forEach(pieceId => {
+        for (let row = 0; row < BOARD_ROWS; row++) {
+            for (let col = 0; col < BOARD_COLS; col++) {
+                if (startingBoard[row][col] == pieceId) {
+                    startingBoard[row][col] = 0; // 'Remove' piece by setting coordinate to 0
+                }
+            }
+        }
+    });
+
+    return {
+        startingBoard,
+        solution,
+        fixedPieces,
+        removablePieces
+    };
 }
 
 // Print board
@@ -144,8 +177,11 @@ export function isBoardComplete(board: Board): boolean {
     return board.every(row => row.every(cell => cell !== 0));
 }
 
-// Generate today's puzzle
-export function generateDailyPuzzle(date: Date = new Date()): Board {
+// -----------------------------------------------------------------------------------------
+
+// MAIN FUNCTION to generate today's puzzle
+export function generateDailyPuzzle(date: Date = new Date()): PuzzleData {
+    const random = initSeededRandomWithDate(date);
     const solution = generateSolvedBoard(date);
 
     if (!solution) {
@@ -156,5 +192,5 @@ export function generateDailyPuzzle(date: Date = new Date()): Board {
         throw new Error('Generated solution is incorrect.')
     }
 
-    return solution;
+    return createPuzzleFromSolution(solution, random);
 }

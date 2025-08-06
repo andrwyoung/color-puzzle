@@ -1,6 +1,6 @@
 // 12 BASIC PIECES
 
-import type { PieceCollection } from '../../types/board-and-piece-types.ts';
+import type { PieceCollection } from '../../types/puzzle-types.ts';
 
 // coordinates: [row, column], starting from the top left. ie: upper left corner = [0,0], the one to its right = [0,1], etc,
 // base: rotations, flips (probably) make more sense to compute geometrically,
@@ -151,3 +151,5 @@ export const PIECES: PieceCollection = {
         ]
     }
 }
+
+export const ALL_PIECE_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];

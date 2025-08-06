@@ -1,5 +1,5 @@
 import { CELL_SIZE } from "../lib/constants/ui";
-import { type Coordinate } from "../types/board-and-piece-types";
+import { type Coordinate } from "../types/puzzle-types";
 
 export function Piece({
   variation,

@@ -75,14 +75,17 @@ function testPuzzleGeneration(count: number = 10): void {
 }
 
 function testSinglePuzzleDetailed(): void {
-    console.log('Single puzzle in detail...');
+    console.log('\nSingle puzzle detail...\n');
     
     const testDate = new Date('2025-08-04');
     try {
         const puzzle = generateDailyPuzzle(testDate);
-        console.log('Generated puzzle:');
-        printBoard(puzzle);
-        console.log(`Completed cells: ${puzzle.flat().filter(c => c !== 0).length}/55`);
+        console.log(`Starting pieces: ${puzzle.fixedPieces} `);
+        console.log(`Removable pieces: ${puzzle.removablePieces} `);
+        console.log('\nSolution:')
+        printBoard(puzzle.solution);
+        console.log('\nStarting Board:')
+        printBoard(puzzle.startingBoard);
     } catch (error) {
         console.error('Failed to generate detailed puzzle:', error);
     }
