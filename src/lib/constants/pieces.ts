@@ -1,19 +1,7 @@
-// BASIC PIECES
-import type { Coordinate } from '../types/board.ts';
+// 12 BASIC PIECES
 
-export interface Piece {
-    letter: string;
-    color: string;
-    base: number[][];
-    variations: Coordinate[][];
-    url?: string;
-}
+import type { PieceCollection } from '../../types/puzzle-types.ts';
 
-export interface PieceCollection {
-    [key: number]: Piece;
-}
-
-// 12 pieces total,
 // coordinates: [row, column], starting from the top left. ie: upper left corner = [0,0], the one to its right = [0,1], etc,
 // base: rotations, flips (probably) make more sense to compute geometrically,
 // variations: fully spelled out makes it easier for puzzle generation.
@@ -163,3 +151,5 @@ export const PIECES: PieceCollection = {
         ]
     }
 }
+
+export const ALL_PIECE_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];

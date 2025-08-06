@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BOARD_COLS, BOARD_ROWS } from "../types/board";
+import { BOARD_COLS, BOARD_ROWS } from "../lib/constants/board.ts";
 import { getPieceColor } from "../lib/ui-helpers/get-piece-color";
 import { CELL_SIZE } from "../lib/constants/ui";
 
