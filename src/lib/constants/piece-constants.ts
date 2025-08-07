@@ -85,7 +85,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     6: {
         letter: 'F', // White Corner - 3
-        color: "#ffffff",
+        color: "#CDCDCD",
         base: [[1,0], [1,1], [0,1]],
         variations: [
             [[1,0], [1,1], [0,1]],
