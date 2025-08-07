@@ -11,13 +11,14 @@ export function DraggablePiece({
   children
 }: {
   id: string;
-  variation: Coordinate[][];
+  variation: Coordinate[];
   color: string;
   children: React.ReactNode;
 }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
     data: {
+      pieceId: +id,
       variation,
       color
     }
@@ -29,7 +30,7 @@ export function DraggablePiece({
   };
 
   return (
-    <div ref={setNodeRef} {...listeners} {...attributes} style={style}>
+    <div ref={setNodeRef} {...listeners} {...attributes} data-id={id} style={style}>
       {children}
     </div>
   );

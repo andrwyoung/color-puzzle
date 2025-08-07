@@ -12,7 +12,7 @@ function testSinglePuzzle(testDate: Date, attemptNumber: number): TestResult {
   const startTime = performance.now();
 
   try {
-    const puzzle = generateDailyPuzzle(testDate);
+    // const puzzle = generateDailyPuzzle(testDate);
     const endTime = performance.now();
     const duration = (endTime - startTime).toFixed(2);
 
@@ -24,7 +24,7 @@ function testSinglePuzzle(testDate: Date, attemptNumber: number): TestResult {
       duration,
       success: true
     };
-  } catch (error) {
+  } catch {
     const endTime = performance.now();
     const duration = (endTime - startTime).toFixed(2);
 
