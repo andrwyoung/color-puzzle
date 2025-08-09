@@ -1,8 +1,8 @@
-import type { BoardType } from "../../types/puzzle-types";
+import type { BoardType, Coordinate } from "../../types/puzzle-types";
 import { BOARD_ROWS, BOARD_COLS } from "../constants/board-constants";
 
-export function canPlacePiece(board: BoardType, variation: number[][], rowIndex: number, colIndex: number): boolean {
-  for (const [dy, dx] of variation) {
+export function canPlacePiece(board: BoardType, pieceShape: Coordinate[], rowIndex: number, colIndex: number): boolean {
+  for (const [dy, dx] of pieceShape) {
     const r = rowIndex + dy;
     const c = colIndex + dx;
 

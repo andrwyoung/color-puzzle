@@ -2,17 +2,23 @@ import { useState } from "react";
 import { BOARD_ROWS, BOARD_COLS } from "../lib/constants/board-constants";
 import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { canPlacePiece } from "../lib/ui-helpers/can-place-piece";
-import type { BoardType } from "../types/puzzle-types";
+import type { BoardType, PieceState, PieceStatusMap } from "../types/puzzle-types";
 import type { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core";
+import { ALL_PIECES } from "../lib/constants/piece-constants";
+import { getOrientedCoords } from "../lib/ui-helpers/get-oriented-coords";
 
 export function useDragHandlers({
   currentBoard,
   setCurrentBoard,
-  setHighlightedCells
+  setHighlightedCells,
+  pieceStatus,
+  setPieceStatus
 }: {
   currentBoard: BoardType;
   setCurrentBoard: React.Dispatch<React.SetStateAction<BoardType>>;
   setHighlightedCells: React.Dispatch<React.SetStateAction<boolean[][]>>;
+  pieceStatus: PieceStatusMap;
+  setPieceStatus: React.Dispatch<React.SetStateAction<PieceStatusMap>>;
 }) {
   // where the mouse currently is
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
@@ -83,45 +89,64 @@ export function useDragHandlers({
     }
 
     // create new highlighted cells array
-    const variation = event.active.data.current?.variation;
-    if (!variation) return;
+    const pieceId = event.active.data.current?.pieceId;
+    const base = ALL_PIECES[pieceId].base;
+    const orientation = pieceStatus[pieceId].orientation;
+
+    // if rotations or mirroring has been applied, translate it
+    const coords = getOrientedCoords(base, orientation);
 
     // if a piece can't be placed, just exit
-    if (!canPlacePiece(currentBoard, variation, rowIndex, colIndex)) {
+    if (!canPlacePiece(currentBoard, coords, rowIndex, colIndex)) {
+      console.log("clearing");
       return clearHighlights();
     }
 
     // generate the highlight mask only *after* checking it's placeable
     const newHighlights = Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false));
-    for (const [dy, dx] of variation) {
-      const r = rowIndex + dy;
-      const c = colIndex + dx;
-      newHighlights[r][c] = true;
+    for (const [dy, dx] of coords) {
+      newHighlights[rowIndex + dy][colIndex + dx] = true;
     }
     setHighlightedCells(newHighlights);
   }
 
   function onDragEnd(event: DragEndEvent) {
-    const variation = event.active.data.current?.variation;
     const pieceId = event.active.data.current?.pieceId;
+    const base = ALL_PIECES[pieceId].base;
+    const orientation = pieceStatus[pieceId].orientation;
+
     const boardEl = document.querySelector("[data-id='board']");
 
-    if (!variation || !pieceId || !boardEl) return;
+    if (!pieceId || !boardEl) {
+      console.error("Missing drag drop data");
+      return;
+    }
 
     // which cell are we in?
     const { rowIndex, colIndex } = getDropCellFromEvent(event);
     // check bounds again
-    const isPlaceable = canPlacePiece(currentBoard, variation, rowIndex, colIndex);
+    const coords = getOrientedCoords(base, orientation);
+    const isPlaceable = canPlacePiece(currentBoard, coords, rowIndex, colIndex);
 
     // only place the piece if it's valid
     if (isPlaceable) {
       const updatedBoard = currentBoard.map(row => [...row]); // clone
-      for (const [dy, dx] of variation) {
-        const r = rowIndex + dy;
-        const c = colIndex + dx;
-        updatedBoard[r][c] = pieceId;
+      for (const [dy, dx] of coords) {
+        updatedBoard[rowIndex + dy][colIndex + dx] = pieceId;
       }
       console.log(updatedBoard);
+
+      // update the piece placement metadata
+      const newPieceState: PieceState = {
+        isOnBoard: true,
+        orientation, // TODO!!!
+        position: { row: rowIndex, col: colIndex }
+      };
+
+      setPieceStatus(prev => ({
+        ...prev,
+        [pieceId]: newPieceState
+      }));
 
       setCurrentBoard(updatedBoard);
     }

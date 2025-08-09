@@ -3,18 +3,10 @@
 import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { type Coordinate } from "../types/puzzle-types";
 
-export function Piece({
-  variation,
-  anchor,
-  color
-}: {
-  variation: Coordinate[];
-  anchor: [number, number];
-  color: string;
-}) {
+export function Piece({ base, anchor, color }: { base: Coordinate[]; anchor: [number, number]; color: string }) {
   return (
     <div className="absolute">
-      {variation.map(([dr, dc], i) => {
+      {base.map(([dr, dc], i) => {
         const top = (anchor[0] + dr) * CELL_SIZE;
         const left = (anchor[1] + dc) * CELL_SIZE;
         return (
