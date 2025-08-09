@@ -7,8 +7,8 @@ export type Coordinate = [number, number];
 export type PieceType = {
   letter: string;
   color: string;
-  base: number[][];
-  variations: Coordinate[][];
+  base: Coordinate[];
+  variations: Coordinate[][]; // DEPRECATED
   url?: string;
 };
 
@@ -23,10 +23,15 @@ export type PuzzleData = {
   removablePieces: number[];
 };
 
+// we can rotate it 4 times or we can flip it!
+// beats manually keeping track of variations
+export type OrientationType = { rotation: 0 | 1 | 2 | 3; flip: 0 | 1 };
+
 // this is how we keep track of what pieces are on the board
 export type PieceState = {
   isOnBoard: boolean;
-  variation: number | null; // variation index. unsure how to do this still
+  orientation: OrientationType;
   position: { row: number; col: number } | null;
 };
+
 export type PieceStatusMap = Record<number, PieceState>; // number = pieceId

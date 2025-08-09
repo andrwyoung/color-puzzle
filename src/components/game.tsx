@@ -20,7 +20,9 @@ export default function Board() {
   // here's where we keep track of which pieces are on the board
   // TODO: actually use it
   const [pieceStatus, setPieceStatus] = useState<PieceStatusMap>(() =>
-    Object.fromEntries(ALL_PIECE_IDS.map(id => [id, { isOnBoard: false, variation: null, position: null }]))
+    Object.fromEntries(
+      ALL_PIECE_IDS.map(id => [id, { isOnBoard: false, orientation: { rotation: 0, flip: 0 }, position: null }])
+    )
   );
 
   // this is a purely ui array
@@ -31,7 +33,9 @@ export default function Board() {
   const { onDragStart, onDragMove, onDragEnd } = useDragHandlers({
     setHighlightedCells,
     currentBoard,
-    setCurrentBoard
+    setCurrentBoard,
+    pieceStatus,
+    setPieceStatus
   });
 
   return (
@@ -39,7 +43,7 @@ export default function Board() {
       <RandomizeButton setBoard={setCurrentBoard} />
       <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
 
-      <PieceContainer />
+      <PieceContainer pieceStatus={pieceStatus} />
     </DndContext>
   );
 }
