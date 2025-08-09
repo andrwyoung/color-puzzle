@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { BOARD_COLS, BOARD_ROWS } from "../lib/constants/board-constants.ts";
 import RandomizeButton from "./ui-components/randomize-button.tsx";
+import ClearBoardButton from "./ui-components/clear-board-button.tsx";
 import PieceContainer from "./piece-container.tsx";
 import { DndContext } from "@dnd-kit/core";
 import GameBoard from "./game-board.tsx";
@@ -18,7 +19,6 @@ export default function Board() {
   );
 
   // here's where we keep track of which pieces are on the board
-  // TODO: actually use it
   const [pieceStatus, setPieceStatus] = useState<PieceStatusMap>(() =>
     Object.fromEntries(
       ALL_PIECE_IDS.map(id => [id, { isOnBoard: false, orientation: { rotation: 0, flip: 0 }, position: null }])
@@ -40,7 +40,10 @@ export default function Board() {
 
   return (
     <DndContext onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
-      <RandomizeButton setBoard={setCurrentBoard} />
+      <div className="flex gap-x-4">
+        <RandomizeButton setBoard={setCurrentBoard} />
+        <ClearBoardButton setBoard={setCurrentBoard} setPieceStatus={setPieceStatus}/>
+      </div>
       <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
 
       <PieceContainer pieceStatus={pieceStatus} />

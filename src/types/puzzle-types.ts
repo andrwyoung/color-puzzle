@@ -25,7 +25,7 @@ export type PuzzleData = {
 
 // we can rotate it 4 times or we can flip it!
 // beats manually keeping track of variations
-export type OrientationType = { rotation: 0 | 1 | 2 | 3; flip: 0 | 1 };
+export type OrientationType = { rotation: 0 | 1 | 2 | 3, flip: 0 | 1 };
 
 // this is how we keep track of what pieces are on the board
 export type PieceState = {
