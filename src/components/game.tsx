@@ -32,19 +32,21 @@ export default function Board() {
   const { onDragStart, onDragMove, onDragEnd } = useDragHandlers({
     setHighlightedCells,
     currentBoard,
-    setCurrentBoard
+    setCurrentBoard,
+    pieceStatus,
+    setPieceStatus
   });
 
   return (
     <DndContext onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
       <div className="flex gap-x-4">
         <RandomizeButton setBoard={setCurrentBoard} />
-        <ClearBoardButton setBoard={setCurrentBoard} />
+        <ClearBoardButton setBoard={setCurrentBoard} setPieceStatus={setPieceStatus}/>
       </div>
       
       <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
 
-      <PieceContainer />
+      <PieceContainer pieceStatus={pieceStatus} />
     </DndContext>
   );
 }

@@ -6,12 +6,19 @@ import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { getBoundingBox } from "../lib/ui-helpers/get-bounding-box";
 import { DraggablePiece } from "./drag-and-drop/draggable-piece";
 import { Piece } from "./piece";
+import type { PieceStatusMap } from "../types/puzzle-types";
 
-export default function PieceContainer() {
+export default function PieceContainer({
+  pieceStatus
+}: {
+  pieceStatus: PieceStatusMap;
+}) {
   return (
     <div className="flex flex-wrap gap-4 bg-gray-100 p-4">
-      {Object.entries(ALL_PIECES).map(([id, piece]) => {
-        const variation = piece.variations[0]; // pick first variation for now
+      {Object.entries(ALL_PIECES)
+      .filter(([id]) => !pieceStatus[+id].isOnBoard) // hide pieces which are on the board
+      .map(([id, piece]) => {
+        const variation = piece.base; // pick first variation for now
         const { width, height } = getBoundingBox(variation);
 
         return (

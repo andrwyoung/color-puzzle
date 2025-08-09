@@ -2,17 +2,21 @@ import { useState } from "react";
 import { BOARD_ROWS, BOARD_COLS } from "../lib/constants/board-constants";
 import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { canPlacePiece } from "../lib/ui-helpers/can-place-piece";
-import type { BoardType } from "../types/puzzle-types";
+import type { BoardType, PieceStatusMap } from "../types/puzzle-types";
 import type { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core";
 
 export function useDragHandlers({
   currentBoard,
   setCurrentBoard,
-  setHighlightedCells
+  setHighlightedCells,
+  pieceStatus,
+  setPieceStatus
 }: {
   currentBoard: BoardType;
   setCurrentBoard: React.Dispatch<React.SetStateAction<BoardType>>;
   setHighlightedCells: React.Dispatch<React.SetStateAction<boolean[][]>>;
+  pieceStatus: PieceStatusMap;
+  setPieceStatus: React.Dispatch<React.SetStateAction<PieceStatusMap>>;
 }) {
   // where the mouse currently is
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
@@ -124,6 +128,16 @@ export function useDragHandlers({
       console.log(updatedBoard);
 
       setCurrentBoard(updatedBoard);
+
+      // update the piece status
+      setPieceStatus(prev => ({
+        ...prev,
+        [pieceId]: {
+          isOnBoard: true,
+          variation,
+          position: { row: rowIndex, col: colIndex}
+        }
+      }))
     }
 
     // clear highlight regardless
