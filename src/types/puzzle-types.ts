@@ -30,6 +30,7 @@ export type OrientationType = { rotation: 0 | 1 | 2 | 3, flip: 0 | 1 };
 // this is how we keep track of what pieces are on the board
 export type PieceState = {
   isOnBoard: boolean;
+  isSelected: boolean;
   orientation: OrientationType;
   position: { row: number; col: number } | null;
 };

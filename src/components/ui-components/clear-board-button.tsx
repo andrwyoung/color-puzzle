@@ -23,6 +23,7 @@ export default function ClearBoardButton({
                 const baseOrientation: OrientationType = {rotation: 0, flip: 0}
                 const newPieceState: PieceState = {
                     isOnBoard: false,
+                    isSelected: false,
                     orientation: baseOrientation,
                     position: null
                 };

@@ -3,7 +3,15 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
-export function DraggablePiece({ id, pieceId, children }: { id: string; pieceId: number; children: React.ReactNode }) {
+export function DraggablePiece({ 
+  id, 
+  pieceId, 
+  children 
+}: { 
+  id: string; 
+  pieceId: number; 
+  children: React.ReactNode 
+}) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
     data: {
@@ -17,7 +25,7 @@ export function DraggablePiece({ id, pieceId, children }: { id: string; pieceId:
   };
 
   return (
-    <div ref={setNodeRef} {...listeners} {...attributes} data-id={id} style={style}>
+    <div ref={setNodeRef} {...listeners} {...attributes} data-id={id} style={style} >
       {children}
     </div>
   );

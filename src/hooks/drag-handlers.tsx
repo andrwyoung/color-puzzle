@@ -67,7 +67,7 @@ export function useDragHandlers({
     setDragOffset({ x: offsetX, y: offsetY });
     setDragPosition({ x: dragX, y: dragY });
   }
-
+  
   // called continuously as the piece is dragged around.
   function onDragMove(event: DragMoveEvent) {
     const { over } = event;
@@ -98,7 +98,6 @@ export function useDragHandlers({
 
     // if a piece can't be placed, just exit
     if (!canPlacePiece(currentBoard, coords, rowIndex, colIndex)) {
-      console.log("clearing");
       return clearHighlights();
     }
 
@@ -139,6 +138,7 @@ export function useDragHandlers({
       // update the piece placement metadata
       const newPieceState: PieceState = {
         isOnBoard: true,
+        isSelected: false,
         orientation, // TODO!!!
         position: { row: rowIndex, col: colIndex }
       };
@@ -159,6 +159,36 @@ export function useDragHandlers({
     setHighlightedCells(Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false)));
   }
 
+  // handle piece selection
+  function handlePieceSelect(pieceId: number) {
+    setPieceStatus(prev => {
+      return Object.fromEntries(
+        Object.entries(prev).map(([id, state]) => [
+          +id,
+          +id === pieceId
+          ? { ...state, isSelected: true }
+          : { ...state, isSelected: false }
+        ])
+      );
+    });
+  }
+
+  function handleDeselectAll() {
+    setPieceStatus(prev => {
+      const newStatus: PieceStatusMap = {};
+      
+      Object.entries(prev).forEach(([id, state]) => {
+        const newPieceState: PieceState = {
+          ...state,
+          isSelected: false
+        };
+        newStatus[+id] = newPieceState;
+      });
+      
+      return newStatus;
+    });
+  }
+
   return {
     dragPosition,
     dragOffset,
@@ -166,6 +196,8 @@ export function useDragHandlers({
     setCurrentBoard,
     onDragStart,
     onDragMove,
-    onDragEnd
+    onDragEnd,
+    handlePieceSelect,
+    handleDeselectAll
   };
 }

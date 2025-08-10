@@ -21,7 +21,7 @@ export default function Board() {
   // here's where we keep track of which pieces are on the board
   const [pieceStatus, setPieceStatus] = useState<PieceStatusMap>(() =>
     Object.fromEntries(
-      ALL_PIECE_IDS.map(id => [id, { isOnBoard: false, orientation: { rotation: 0, flip: 0 }, position: null }])
+      ALL_PIECE_IDS.map(id => [id, { isOnBoard: false, isSelected: false, orientation: { rotation: 0, flip: 0 }, position: null }])
     )
   );
 
@@ -30,12 +30,12 @@ export default function Board() {
     Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false))
   );
 
-  const { onDragStart, onDragMove, onDragEnd } = useDragHandlers({
+  const { onDragStart, onDragMove, onDragEnd, handlePieceSelect, handleDeselectAll } = useDragHandlers({
     setHighlightedCells,
     currentBoard,
     setCurrentBoard,
     pieceStatus,
-    setPieceStatus
+    setPieceStatus,
   });
 
   return (
@@ -46,7 +46,7 @@ export default function Board() {
       </div>
       <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
 
-      <PieceContainer pieceStatus={pieceStatus} />
+      <PieceContainer pieceStatus={pieceStatus} onPieceSelect={handlePieceSelect}/>
     </DndContext>
   );
 }
