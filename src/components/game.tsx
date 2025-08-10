@@ -3,14 +3,16 @@
 
 import { useState } from "react";
 import { BOARD_COLS, BOARD_ROWS } from "../lib/constants/board-constants.ts";
+import { ALL_PIECES, ALL_PIECE_IDS } from "../lib/constants/piece-constants.ts";
 import RandomizeButton from "./ui-components/randomize-button.tsx";
 import ClearBoardButton from "./ui-components/clear-board-button.tsx";
+import Button from "./ui-components/styled-button.tsx";
 import PieceContainer from "./piece-container.tsx";
 import { DndContext } from "@dnd-kit/core";
 import GameBoard from "./game-board.tsx";
 import type { BoardType, PieceStatusMap } from "../types/puzzle-types.ts";
 import { useDragHandlers } from "../hooks/drag-handlers.tsx";
-import { ALL_PIECE_IDS } from "../lib/constants/piece-constants.ts";
+import { usePieceManipulation } from "../hooks/rotate-and-flip-handlers.tsx";
 
 export default function Board() {
   // this is the actual game board
@@ -21,7 +23,7 @@ export default function Board() {
   // here's where we keep track of which pieces are on the board
   const [pieceStatus, setPieceStatus] = useState<PieceStatusMap>(() =>
     Object.fromEntries(
-      ALL_PIECE_IDS.map(id => [id, { isOnBoard: false, isSelected: false, orientation: { rotation: 0, flip: 0 }, position: null }])
+      ALL_PIECE_IDS.map(id => [id, { isOnBoard: false, isSelected: false, orientation: ALL_PIECES[id].base, position: null }])
     )
   );
 
@@ -38,13 +40,27 @@ export default function Board() {
     setPieceStatus,
   });
 
+  const { rotateSelectedClockwise, rotateSelectedCounterclockwise, flipSelectedHorizontally, flipSelectedVertically } = usePieceManipulation({
+    pieceStatus,
+    setPieceStatus
+  });
+
   return (
     <DndContext onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
       <div className="flex gap-x-4">
         <RandomizeButton setBoard={setCurrentBoard} />
         <ClearBoardButton setBoard={setCurrentBoard} setPieceStatus={setPieceStatus}/>
       </div>
-      <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
+      <div className="flex gap-x-8">
+        <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
+        <div className="flex flex-col gap-y-4">
+          <Button onClick={rotateSelectedClockwise}>↻</Button>
+          <Button onClick={rotateSelectedCounterclockwise}>↺</Button>
+          <Button onClick={flipSelectedHorizontally}>↔</Button>
+          <Button onClick={flipSelectedVertically}>↕</Button>
+        </div>
+      </div>
+      
 
       <PieceContainer pieceStatus={pieceStatus} onPieceSelect={handlePieceSelect}/>
     </DndContext>

@@ -23,15 +23,11 @@ export type PuzzleData = {
   removablePieces: number[];
 };
 
-// we can rotate it 4 times or we can flip it!
-// beats manually keeping track of variations
-export type OrientationType = { rotation: 0 | 1 | 2 | 3, flip: 0 | 1 };
-
 // this is how we keep track of what pieces are on the board
 export type PieceState = {
   isOnBoard: boolean;
   isSelected: boolean;
-  orientation: OrientationType;
+  orientation: Coordinate[];
   position: { row: number; col: number } | null;
 };
 

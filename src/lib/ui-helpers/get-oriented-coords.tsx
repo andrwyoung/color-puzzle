@@ -1,6 +1,47 @@
-import type { Coordinate, OrientationType } from "../../types/puzzle-types";
+// ui helpers for rotating, flipping base pieces + normalizing to [0, 0]
 
-export function getOrientedCoords(base: Coordinate[], orientation: OrientationType): Coordinate[] {
+import type { Coordinate } from "../../types/puzzle-types";
+
+// rotate clockwise
+export function rotateClockwise(coords: Coordinate[]): Coordinate[] {
+  const rotated = coords.map(([row, col]): Coordinate => [col, -row]);
+
+  return normalizedCoordinates(rotated);
+}
+
+// rotate counterclockwise
+export function rotateCounterclockwise(coords: Coordinate[]): Coordinate[] {
+  const rotated = coords.map(([row, col]): Coordinate => [-col, row]);
+
+  return normalizedCoordinates(rotated);
+}
+
+// flip horizontally
+export function flipHorizontally(coords: Coordinate[]): Coordinate[] {
+  const rotated = coords.map(([row, col]): Coordinate => [row, -col]);
+
+  return normalizedCoordinates(rotated);
+}
+
+// flip vertically
+export function flipVertically(coords: Coordinate[]): Coordinate[] {
+  const rotated = coords.map(([row, col]): Coordinate => [-row, col]);
+
+  return normalizedCoordinates(rotated);
+}
+
+// translate so that top left corner is 0, 0
+function normalizedCoordinates(coords: Coordinate[]): Coordinate[] {
+  const minRow = Math.min(...coords.map(([r]) => r));
+  const minCol = Math.min(...coords.map(([, c]) => c));
+
+  return coords.map(([row, col]): Coordinate => [row - minRow, col - minCol]);
+}
+
+
+// DEPRECATED
+export function getOrientedCoords(base: Coordinate[], orientation: number): Coordinate[] {
+  
   // STEP 1: transform each cell
   let transformed = base.map(([y, x]) => {
     // if flipped
