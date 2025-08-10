@@ -133,7 +133,7 @@ export function useDragHandlers({
       const newPieceState: PieceState = {
         isOnBoard: true,
         isSelected: false,
-        orientation, // TODO!!!
+        orientation: orientation,
         position: { row: rowIndex, col: colIndex }
       };
 
