@@ -8,31 +8,40 @@ import type { PieceStatusMap } from "../types/puzzle-types";
 import { DraggablePiece } from "./drag-and-drop/draggable-piece";
 import { Piece } from "./piece";
 
-export default function PieceContainer({ pieceStatus }: { pieceStatus: PieceStatusMap }) {
+export default function PieceContainer({ pieceStatus, onPieceSelect }: { pieceStatus: PieceStatusMap; onPieceSelect?: (pieceId: number) => void }) {
   return (
     <div className="flex flex-wrap gap-4 bg-gray-100 p-4">
       {Object.entries(ALL_PIECES).map(([id, piece]) => {
-        const basePiece = piece.base;
         const pieceId = +id;
-
-        const { width, height } = getBoundingBox(basePiece);
         const pieceState = pieceStatus[pieceId];
+
+        const currentOrientation = pieceState.orientation;
+        const { width, height } = getBoundingBox(currentOrientation);
 
         if (pieceState.isOnBoard) return null;
 
         return (
-          <DraggablePiece id={id} pieceId={pieceId} key={id}>
+          <DraggablePiece 
+            id={id} 
+            pieceId={pieceId} 
+            key={id} 
+          >
             <div
               className="relative"
               style={{
                 width: width * CELL_SIZE,
                 height: height * CELL_SIZE
               }}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                onPieceSelect?.(pieceId);
+              }}
             >
               <Piece
-                base={basePiece}
+                base={currentOrientation}
                 anchor={[0, 0]} // top-left anchor for layout
                 color={piece.color}
+                isSelected={pieceState.isSelected}
               />
             </div>
           </DraggablePiece>

@@ -67,7 +67,7 @@ export function useDragHandlers({
     setDragOffset({ x: offsetX, y: offsetY });
     setDragPosition({ x: dragX, y: dragY });
   }
-
+  
   // called continuously as the piece is dragged around.
   function onDragMove(event: DragMoveEvent) {
     const { over } = event;
@@ -90,21 +90,16 @@ export function useDragHandlers({
 
     // create new highlighted cells array
     const pieceId = event.active.data.current?.pieceId;
-    const base = ALL_PIECES[pieceId].base;
     const orientation = pieceStatus[pieceId].orientation;
 
-    // if rotations or mirroring has been applied, translate it
-    const coords = getOrientedCoords(base, orientation);
-
     // if a piece can't be placed, just exit
-    if (!canPlacePiece(currentBoard, coords, rowIndex, colIndex)) {
-      console.log("clearing");
+    if (!canPlacePiece(currentBoard, orientation, rowIndex, colIndex)) {
       return clearHighlights();
     }
 
     // generate the highlight mask only *after* checking it's placeable
     const newHighlights = Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false));
-    for (const [dy, dx] of coords) {
+    for (const [dy, dx] of orientation) {
       newHighlights[rowIndex + dy][colIndex + dx] = true;
     }
     setHighlightedCells(newHighlights);
@@ -112,7 +107,6 @@ export function useDragHandlers({
 
   function onDragEnd(event: DragEndEvent) {
     const pieceId = event.active.data.current?.pieceId;
-    const base = ALL_PIECES[pieceId].base;
     const orientation = pieceStatus[pieceId].orientation;
 
     const boardEl = document.querySelector("[data-id='board']");
@@ -125,13 +119,12 @@ export function useDragHandlers({
     // which cell are we in?
     const { rowIndex, colIndex } = getDropCellFromEvent(event);
     // check bounds again
-    const coords = getOrientedCoords(base, orientation);
-    const isPlaceable = canPlacePiece(currentBoard, coords, rowIndex, colIndex);
+    const isPlaceable = canPlacePiece(currentBoard, orientation, rowIndex, colIndex);
 
     // only place the piece if it's valid
     if (isPlaceable) {
       const updatedBoard = currentBoard.map(row => [...row]); // clone
-      for (const [dy, dx] of coords) {
+      for (const [dy, dx] of orientation) {
         updatedBoard[rowIndex + dy][colIndex + dx] = pieceId;
       }
       console.log(updatedBoard);
@@ -139,7 +132,8 @@ export function useDragHandlers({
       // update the piece placement metadata
       const newPieceState: PieceState = {
         isOnBoard: true,
-        orientation, // TODO!!!
+        isSelected: false,
+        orientation: orientation,
         position: { row: rowIndex, col: colIndex }
       };
 
@@ -159,6 +153,36 @@ export function useDragHandlers({
     setHighlightedCells(Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false)));
   }
 
+  // handle piece selection
+  function handlePieceSelect(pieceId: number) {
+    setPieceStatus(prev => {
+      return Object.fromEntries(
+        Object.entries(prev).map(([id, state]) => [
+          +id,
+          +id === pieceId
+          ? { ...state, isSelected: true }
+          : { ...state, isSelected: false }
+        ])
+      );
+    });
+  }
+
+  function handleDeselectAll() {
+    setPieceStatus(prev => {
+      const newStatus: PieceStatusMap = {};
+      
+      Object.entries(prev).forEach(([id, state]) => {
+        const newPieceState: PieceState = {
+          ...state,
+          isSelected: false
+        };
+        newStatus[+id] = newPieceState;
+      });
+      
+      return newStatus;
+    });
+  }
+
   return {
     dragPosition,
     dragOffset,
@@ -166,6 +190,8 @@ export function useDragHandlers({
     setCurrentBoard,
     onDragStart,
     onDragMove,
-    onDragEnd
+    onDragEnd,
+    handlePieceSelect,
+    handleDeselectAll
   };
 }
