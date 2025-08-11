@@ -13,6 +13,7 @@ import GameBoard from "./game-board.tsx";
 import type { BoardType, PieceStatusMap } from "../types/puzzle-types.ts";
 import { useDragHandlers } from "../hooks/drag-handlers.tsx";
 import { usePieceManipulation } from "../hooks/rotate-and-flip-handlers.tsx";
+import { useSelectionHandlers } from "../hooks/piece-selection-handlers.tsx";
 
 export default function Board() {
   // this is the actual game board
@@ -32,12 +33,17 @@ export default function Board() {
     Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false))
   );
 
-  const { onDragStart, onDragMove, onDragEnd, handlePieceSelect, handleDeselectAll } = useDragHandlers({
+  const { onDragStart, onDragMove, onDragEnd } = useDragHandlers({
     setHighlightedCells,
     currentBoard,
     setCurrentBoard,
     pieceStatus,
     setPieceStatus,
+  });
+
+  const { handlePieceSelect, handleDeselectAll } = useSelectionHandlers({
+    pieceStatus,
+    setPieceStatus
   });
 
   const { rotateSelectedClockwise, rotateSelectedCounterclockwise, flipSelectedHorizontally, flipSelectedVertically } = usePieceManipulation({

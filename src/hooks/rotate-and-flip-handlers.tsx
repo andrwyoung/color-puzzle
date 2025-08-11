@@ -1,4 +1,4 @@
-import type { PieceState, PieceStatusMap } from "../types/puzzle-types";
+import type { Coordinate, PieceStatusMap } from "../types/puzzle-types";
 import { rotateClockwise, rotateCounterclockwise, flipHorizontally, flipVertically } from "../lib/ui-helpers/get-oriented-coords";
 
 export function usePieceManipulation({ 
@@ -10,76 +10,27 @@ export function usePieceManipulation({
 }) {
 
     const getSelectedPieceId = () => {
-        return Object.entries(pieceStatus).find(([ , state]) => state.isSelected)?.[0];
+        return Object.entries(pieceStatus).find(([, state]) => state.isSelected)?.[0];
     }
 
-    function rotateSelectedClockwise() {
+    function transformSelectedPiece(transformFn: (coords: Coordinate[]) => Coordinate[]) {
         const selectedPieceId = getSelectedPieceId();
         if (!selectedPieceId) return;
 
         const pieceId = +selectedPieceId;
         const currentOrientation = pieceStatus[pieceId].orientation;
-        const newOrientation = rotateClockwise(currentOrientation);
-
-        const newPieceState: PieceState = {
-            isOnBoard: false,
-            isSelected: true,
-            orientation: newOrientation,
-            position: null
-          };
+        const newOrientation = transformFn(currentOrientation);
 
         setPieceStatus(prev => ({
-            ... prev,
-            [pieceId]: newPieceState
-        }));
-    }
-
-    function rotateSelectedCounterclockwise() {
-        const selectedPieceId = getSelectedPieceId();
-        if (!selectedPieceId) return;
-
-        const pieceId = +selectedPieceId;
-        const currentOrientation = pieceStatus[pieceId].orientation;
-        const newOrientation = rotateCounterclockwise(currentOrientation);
-
-        setPieceStatus(prev => ({
-            ... prev,
-            [pieceId]: { ...prev[pieceId], orientation: newOrientation }
-        }));
-    }
-
-    function flipSelectedHorizontally() {
-        const selectedPieceId = getSelectedPieceId();
-        if (!selectedPieceId) return;
-
-        const pieceId = +selectedPieceId;
-        const currentOrientation = pieceStatus[pieceId].orientation;
-        const newOrientation = flipHorizontally(currentOrientation);
-
-        setPieceStatus(prev => ({
-            ... prev,
-            [pieceId]: { ...prev[pieceId], orientation: newOrientation }
-        }));
-    }
-
-    function flipSelectedVertically() {
-        const selectedPieceId = getSelectedPieceId();
-        if (!selectedPieceId) return;
-
-        const pieceId = +selectedPieceId;
-        const currentOrientation = pieceStatus[pieceId].orientation;
-        const newOrientation = flipVertically(currentOrientation);
-
-        setPieceStatus(prev => ({
-            ... prev,
+            ...prev,
             [pieceId]: { ...prev[pieceId], orientation: newOrientation }
         }));
     }
 
     return {
-        rotateSelectedClockwise,
-        rotateSelectedCounterclockwise,
-        flipSelectedHorizontally,
-        flipSelectedVertically
+        rotateSelectedClockwise: () => transformSelectedPiece(rotateClockwise),
+        rotateSelectedCounterclockwise: () => transformSelectedPiece(rotateCounterclockwise),
+        flipSelectedHorizontally: () => transformSelectedPiece(flipHorizontally),
+        flipSelectedVertically: () => transformSelectedPiece(flipVertically)
     };
 }

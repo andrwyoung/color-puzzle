@@ -4,8 +4,6 @@ import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { canPlacePiece } from "../lib/ui-helpers/can-place-piece";
 import type { BoardType, PieceState, PieceStatusMap } from "../types/puzzle-types";
 import type { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core";
-import { ALL_PIECES } from "../lib/constants/piece-constants";
-import { getOrientedCoords } from "../lib/ui-helpers/get-oriented-coords";
 
 export function useDragHandlers({
   currentBoard,
@@ -153,36 +151,6 @@ export function useDragHandlers({
     setHighlightedCells(Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false)));
   }
 
-  // handle piece selection
-  function handlePieceSelect(pieceId: number) {
-    setPieceStatus(prev => {
-      return Object.fromEntries(
-        Object.entries(prev).map(([id, state]) => [
-          +id,
-          +id === pieceId
-          ? { ...state, isSelected: true }
-          : { ...state, isSelected: false }
-        ])
-      );
-    });
-  }
-
-  function handleDeselectAll() {
-    setPieceStatus(prev => {
-      const newStatus: PieceStatusMap = {};
-      
-      Object.entries(prev).forEach(([id, state]) => {
-        const newPieceState: PieceState = {
-          ...state,
-          isSelected: false
-        };
-        newStatus[+id] = newPieceState;
-      });
-      
-      return newStatus;
-    });
-  }
-
   return {
     dragPosition,
     dragOffset,
@@ -190,8 +158,6 @@ export function useDragHandlers({
     setCurrentBoard,
     onDragStart,
     onDragMove,
-    onDragEnd,
-    handlePieceSelect,
-    handleDeselectAll
+    onDragEnd
   };
 }
