@@ -1,7 +1,7 @@
 // this is the game itself!
 // it holds the board and the pieces, and how they all move around
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BOARD_COLS, BOARD_ROWS } from "../lib/constants/board-constants.ts";
 import { ALL_PIECES, ALL_PIECE_IDS } from "../lib/constants/piece-constants.ts";
 import ClearBoardButton from "./ui-components/clear-board-button.tsx";
@@ -45,7 +45,7 @@ export default function Board() {
     setIsDragging
   });
 
-  const { handlePieceSelect } = useSelectionHandlers({
+  const { handlePieceSelect, handleDeselectAll } = useSelectionHandlers({
     pieceStatus,
     setPieceStatus
   });
@@ -55,6 +55,22 @@ export default function Board() {
   //     pieceStatus,
   //     setPieceStatus
   //   });
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const dataId = target.closest("[data-id]")?.getAttribute("data-id") || "";
+
+      if (!dataId.includes("piece-")) {
+        handleDeselectAll();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [handleDeselectAll]);
 
   return (
     <DndContext onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
