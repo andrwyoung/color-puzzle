@@ -10,7 +10,7 @@ import type { PieceCollection } from "../../types/puzzle-types.ts";
 export const ALL_PIECES: PieceCollection = {
     1: {
         letter: 'A', // Orange L - 4
-        color: "#f7941d",
+        color: "#F3AC57",
         base: [[1,0], [1,1], [1,2], [0,2]],
         variations: [
             [[1,0], [1,1], [1,2], [0,2]],
@@ -25,7 +25,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     2: {
         letter: 'B', // Red Block - 5
-        color: "#d81921",
+        color: "#F86C6B",
         base: [[1,0], [1,1], [1,2], [0,1], [0,2]],
         variations: [
             [[1,0], [1,1], [1,2], [0,1], [0,2]],
@@ -40,7 +40,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     3: {
         letter: 'C', // Dark Blue L - 5
-        color: "#0289d0",
+        color: "#3A97E3",
         base: [[1,0], [1,1], [1,2], [1,3], [0,3]],
         variations: [
             [[1,0], [1,1], [1,2], [1,3], [0,3]],
@@ -55,7 +55,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     4: {
         letter: 'D', // Peach Baton - 5
-        color: "#fbd3cb",
+        color: "#FCCAB4",
         base: [[1,0], [1,1], [1,2], [1,3], [0,2]],
         variations: [
             [[1,0], [1,1], [1,2], [1,3], [0,2]],
@@ -70,7 +70,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     5: {
         letter: 'E', // Dark Green Zag - 5
-        color: "#278c44",
+        color: "#49C066",
         base: [[1,0], [1,1], [1,2], [0,2], [0,3]],
         variations: [
             [[1,0], [1,1], [1,2], [0,2], [0,3]],
@@ -85,7 +85,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     6: {
         letter: 'F', // White Corner - 3
-        color: "#CDCDCD",
+        color: "#FFFFFF",
         base: [[1,0], [1,1], [0,1]],
         variations: [
             [[1,0], [1,1], [0,1]],
@@ -96,7 +96,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     7: {
         letter: 'G', // Light Blue Corner - 5
-        color: "#abe1fa",
+        color: "#89D3E3",
         base: [[2,0], [2,1], [2,2], [1,2], [0,2]],
         variations: [
             [[2,0], [2,1], [2,2], [1,2], [0,2]],
@@ -107,7 +107,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     8: {
         letter: 'H', // Magenta ZigZag - 5
-        color: "#f172ac",
+        color: "#F378BB",
         base: [[2,0], [2,1], [1,1], [1,2], [0,2]],
         variations: [
             [[2,0], [2,1], [1,1], [1,2], [0,2]],
@@ -118,7 +118,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     9: {
         letter: 'I', // Yellow U -5
-        color: "#fff200",
+        color: "#FAF371",
         base: [[2,0], [2,1], [1,1], [0,0], [0,1]],
         variations: [
             [[2,0], [2,1], [1,1], [0,0], [0,1]],
@@ -129,7 +129,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     10: {
         letter: 'J', // Purple Stick - 4
-        color: "#970f76",
+        color: "#B55AEE",
         base: [[0,0], [0,1], [0,2], [0,3]],
         variations: [
             [[0,0], [0,1], [0,2], [0,3]],
@@ -138,7 +138,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     11: {
         letter: 'K', // Light Green Square - 4
-        color: "#a6ce39",
+        color: "#ACDE4B",
         base: [[1,0], [1,1], [0,0], [0,1]],
         variations: [
             [[1,0], [1,1], [0,0], [0,1]]
@@ -146,7 +146,7 @@ export const ALL_PIECES: PieceCollection = {
     },
     12: {
         letter: 'L', // Gray Cross - 5
-        color: "#bdbec0",
+        color: "#ADB9D0",
         base: [[2,1], [1,0], [1,1], [1,2], [0,1]],
         variations: [
             [[2,1], [1,0], [1,1], [1,2], [0,1]]

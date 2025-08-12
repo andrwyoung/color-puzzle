@@ -12,7 +12,11 @@ export function DroppableBoard({ id, children }: DroppableBoardProps) {
   const { setNodeRef, isOver } = useDroppable({ id });
 
   return (
-    <div ref={setNodeRef} data-id={id} className={`${isOver ? "bg-emerald-400" : "bg-emerald-300"} rounded-lg p-2`}>
+    <div
+      ref={setNodeRef}
+      data-id={id}
+      className={`${isOver ? "bg-transparent" : "bg-transparent"} rounded-lg p-2 border-2 border-white`}
+    >
       {children}
     </div>
   );

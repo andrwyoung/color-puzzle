@@ -68,4 +68,25 @@
 @theme {
   --font-header: "Sansation", sans-serif;
   --font-body: "Mulish", sans-serif;
+
+  /* Brand / Accent */
+  --color-primary: #f0e5d0;
+  --color-primary-hover: #a2ead3;
+  --color-accent: #faba79;
+
+  --color-background: #53525e;
+
+  /* Neutrals */
+  --color-secondary-bg: #f3f5f6;
+  --color-border: #9ea2a3;
+
+  /* Text */
+  --color-text: #f5f5f4; /* gray-900 */
+  --color-text-light: #6b7280; /* gray-500 */
+  --color-text-inverse: #ffffff;
+
+  /* Semantic */
+  --color-success: #10b981; /* emerald-500 */
+  --color-warning: #f59e0b; /* amber-500 */
+  --color-error: #ef4444; /* red-500 */
 }

@@ -1,21 +1,18 @@
 import type { PieceState, PieceStatusMap } from "../types/puzzle-types";
 
 export function useSelectionHandlers({
-  pieceStatus,
+  // pieceStatus,
   setPieceStatus
 }: {
-  pieceStatus: PieceStatusMap;
+  pieceStatus?: PieceStatusMap;
   setPieceStatus: React.Dispatch<React.SetStateAction<PieceStatusMap>>;
 }) {
-
   function handlePieceSelect(pieceId: number) {
     setPieceStatus(prev => {
       return Object.fromEntries(
         Object.entries(prev).map(([id, state]) => [
           +id,
-          +id === pieceId
-          ? { ...state, isSelected: true }
-          : { ...state, isSelected: false }
+          +id === pieceId ? { ...state, isSelected: true } : { ...state, isSelected: false }
         ])
       );
     });
@@ -24,7 +21,7 @@ export function useSelectionHandlers({
   function handleDeselectAll() {
     setPieceStatus(prev => {
       const newStatus: PieceStatusMap = {};
-      
+
       Object.entries(prev).forEach(([id, state]) => {
         const newPieceState: PieceState = {
           ...state,
@@ -32,7 +29,7 @@ export function useSelectionHandlers({
         };
         newStatus[+id] = newPieceState;
       });
-      
+
       return newStatus;
     });
   }

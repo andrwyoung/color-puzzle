@@ -4,12 +4,7 @@ import Board from "./components/game";
 
 export default function App() {
   return (
-    <div className="h-screen flex flex-col gap-8 items-center overflow-y-auto justify-center bg-white">
-      <div className="flex flex-col gap-2 items-center">
-        <h1 className="text-4xl font-header font-normal">Color Puzzle Game!</h1>
-        <p className="font-body">hey there, this is a game game game</p>
-      </div>
-
+    <div className="h-screen w-screen flex flex-col gap-8 items-center overflow-y-auto justify-center bg-background">
       <Board />
     </div>
   );
