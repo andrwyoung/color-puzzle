@@ -38,18 +38,16 @@ function normalizedCoordinates(coords: Coordinate[]): Coordinate[] {
   return coords.map(([row, col]): Coordinate => [row - minRow, col - minCol]);
 }
 
-
 // DEPRECATED
 export function getOrientedCoords(base: Coordinate[], orientation: number): Coordinate[] {
-  
   // STEP 1: transform each cell
   let transformed = base.map(([y, x]) => {
     // if flipped
-    if (orientation.flip) x = -x;
+    if (orientation) x = -x;
 
     // if rotated, rotate clockwise
     // 90°: (y, x) -> (x, -y)
-    switch (orientation.rotation) {
+    switch (orientation) {
       case 0:
         return [y, x] as Coordinate;
       case 1:

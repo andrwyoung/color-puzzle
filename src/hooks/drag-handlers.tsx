@@ -10,13 +10,15 @@ export function useDragHandlers({
   setCurrentBoard,
   setHighlightedCells,
   pieceStatus,
-  setPieceStatus
+  setPieceStatus,
+  setIsDragging
 }: {
   currentBoard: BoardType;
   setCurrentBoard: React.Dispatch<React.SetStateAction<BoardType>>;
   setHighlightedCells: React.Dispatch<React.SetStateAction<boolean[][]>>;
   pieceStatus: PieceStatusMap;
   setPieceStatus: React.Dispatch<React.SetStateAction<PieceStatusMap>>;
+  setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   // where the mouse currently is
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
@@ -62,10 +64,11 @@ export function useDragHandlers({
     const dragX = mouseEvent.clientX - boardRect.left;
     const dragY = mouseEvent.clientY - boardRect.top;
 
+    setIsDragging(true);
     setDragOffset({ x: offsetX, y: offsetY });
     setDragPosition({ x: dragX, y: dragY });
   }
-  
+
   // called continuously as the piece is dragged around.
   function onDragMove(event: DragMoveEvent) {
     const { over } = event;
@@ -104,6 +107,8 @@ export function useDragHandlers({
   }
 
   function onDragEnd(event: DragEndEvent) {
+    setIsDragging(false);
+
     const pieceId = event.active.data.current?.pieceId;
     const orientation = pieceStatus[pieceId].orientation;
 
