@@ -10,6 +10,8 @@ export type PieceType = {
   base: Coordinate[];
   variations: Coordinate[][]; // DEPRECATED
   url?: string;
+  disableFlip?: boolean;
+  disableRotation?: boolean;
 };
 
 export type PieceCollection = {
