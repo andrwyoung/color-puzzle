@@ -69,27 +69,27 @@ export function useDailyPuzzle({
         
         // Mark fixed pieces as on board and non-movable
         puzzle.fixedPieces.forEach(pieceId => {
-        const pieceData = findPiecePosition(puzzle.startingBoard, pieceId);
-        if (pieceData) {
-            const newPieceState: PieceState = {
-            isOnBoard: true,
-            isSelected: false,
-            orientation: pieceData.orientation,
-            position: pieceData.position
-            };
-            newPieceStatus[pieceId] = newPieceState;
-        }
+            const pieceData = findPiecePosition(puzzle.startingBoard, pieceId);
+            if (pieceData) {
+                const newPieceState: PieceState = {
+                    isOnBoard: true,
+                    isSelected: false,
+                    orientation: pieceData.orientation,
+                    position: pieceData.position
+                };
+                newPieceStatus[pieceId] = newPieceState;
+            }
         });
         
         // Reset removable pieces to not on board
         puzzle.removablePieces.forEach(pieceId => {
-        const newPieceState: PieceState = {
-            isOnBoard: false,
-            isSelected: false,
-            orientation: ALL_PIECES[pieceId].base,
-            position: null
-        };
-        newPieceStatus[pieceId] = newPieceState;
+            const newPieceState: PieceState = {
+                isOnBoard: false,
+                isSelected: false,
+                orientation: ALL_PIECES[pieceId].base,
+                position: null
+            };
+            newPieceStatus[pieceId] = newPieceState;
         });
         
         setPieceStatus(newPieceStatus);
@@ -98,37 +98,37 @@ export function useDailyPuzzle({
 
     function resetToTodaysPuzzle() {
         if (dailyPuzzle) {
-        setCurrentBoard(dailyPuzzle.startingBoard);
+            setCurrentBoard(dailyPuzzle.startingBoard);
         
-        // Reset piece status to initial puzzle state
-        const newPieceStatus: PieceStatusMap = { ...pieceStatus };
-        
-        // Restore fixed pieces
-        dailyPuzzle.fixedPieces.forEach(pieceId => {
-            const pieceData = findPiecePosition(dailyPuzzle.startingBoard, pieceId);
-            if (pieceData) {
-            const newPieceState: PieceState = {
-                isOnBoard: true,
-                isSelected: false,
-                orientation: pieceData.orientation,
-                position: pieceData.position
-            };
-            newPieceStatus[pieceId] = newPieceState;
-            }
-        });
-        
-        // Reset removable pieces
-        dailyPuzzle.removablePieces.forEach(pieceId => {
-            const newPieceState: PieceState = {
-            isOnBoard: false,
-            isSelected: false,
-            orientation: ALL_PIECES[pieceId].base,
-            position: null
-            };
-            newPieceStatus[pieceId] = newPieceState;
-        });
-        
-        setPieceStatus(newPieceStatus);
+            // Reset piece status to initial puzzle state
+            const newPieceStatus: PieceStatusMap = { ...pieceStatus };
+            
+            // Restore fixed pieces
+            dailyPuzzle.fixedPieces.forEach(pieceId => {
+                const pieceData = findPiecePosition(dailyPuzzle.startingBoard, pieceId);
+                if (pieceData) {
+                    const newPieceState: PieceState = {
+                        isOnBoard: true,
+                        isSelected: false,
+                        orientation: pieceData.orientation,
+                        position: pieceData.position
+                    };
+                    newPieceStatus[pieceId] = newPieceState;
+                }
+            });
+            
+            // Reset removable pieces
+            dailyPuzzle.removablePieces.forEach(pieceId => {
+                const newPieceState: PieceState = {
+                    isOnBoard: false,
+                    isSelected: false,
+                    orientation: ALL_PIECES[pieceId].base,
+                    position: null
+                };
+                newPieceStatus[pieceId] = newPieceState;
+            });
+            
+            setPieceStatus(newPieceStatus);
         }
     }
 

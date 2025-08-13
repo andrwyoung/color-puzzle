@@ -29,9 +29,10 @@ export function createSeededRandom(seed: number) {
 // Initialize seeded random using today's date
 export function initSeededRandomWithDate(date: Date) {
   const dateString = date.toISOString().split("T")[0];
+  const dayFirst = dateString.slice(8,10) + dateString.slice(4,8) + dateString.slice(0,4); // rearrange date for better seeding
   let seed = 0;
-  for (let i = 0; i < dateString.length; i++) {
-    seed = seed * 31 + dateString.charCodeAt(i);
+  for (let i = 0; i < dayFirst.length; i++) {
+    seed = seed * 31 + dayFirst.charCodeAt(i);
   }
   return createSeededRandom(seed);
 }
