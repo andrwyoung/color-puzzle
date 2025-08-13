@@ -9,7 +9,8 @@ export default function Button({
   }) {
     return (
       <button 
-        className="mb-2 px-4 py-2 text-2xl font-header bg-emerald-400 text-white rounded hover:bg-emerald-300 cursor-pointer" 
+        className="mb-2 px-4 py-2 h-fit text-md font-header bg-primary text-background rounded 
+      hover:bg-white cursor-pointer" 
         onClick={onClick}
       >
         {children}
