@@ -2,7 +2,7 @@
 // yet placed on the board
 
 import { FaArrowsAltH } from "react-icons/fa";
-import { FaArrowRotateRight } from "react-icons/fa6";
+import { FaArrowRotateRight, FaArrowRotateLeft } from "react-icons/fa6";
 import { usePieceManipulation } from "../hooks/rotate-and-flip-handlers";
 import { ALL_PIECES } from "../lib/constants/piece-constants";
 import { CELL_SIZE } from "../lib/constants/ui-constants";
@@ -22,7 +22,7 @@ export default function PieceContainer({
   onPieceSelect?: (pieceId: number) => void;
   isDragging: boolean;
 }) {
-  const { rotateSelectedClockwise, flipSelectedHorizontally } = usePieceManipulation({
+  const { rotateSelectedClockwise, flipSelectedHorizontally, rotateSelectedCounterclockwise } = usePieceManipulation({
     pieceStatus,
     setPieceStatus
   });
@@ -42,15 +42,15 @@ export default function PieceContainer({
         return (
           <div className="relative" data-id={`piece-${pieceId}`}>
             {showSelectionUi && (
-              <div className="absolute z-50 -translate-x-2 -translate-y-2 flex gap-2">
+              <div className="absolute z-50 -translate-y-12 flex gap-2">
                 {!ALL_PIECES[pieceId].disableRotation && (
                   <button
                     className="
                   p-2 bg-primary rounded-md text-background hover:scale-105
               hover:bg-white cursor-pointer"
-                    onClick={rotateSelectedClockwise}
+                    onClick={rotateSelectedCounterclockwise}
                   >
-                    <FaArrowRotateRight />
+                    <FaArrowRotateLeft />
                   </button>
                 )}
                 {!ALL_PIECES[pieceId].disableFlip && (
@@ -64,6 +64,16 @@ export default function PieceContainer({
                     }}
                   >
                     <FaArrowsAltH />
+                  </button>
+                )}
+                {!ALL_PIECES[pieceId].disableRotation && (
+                  <button
+                    className="
+                  p-2 bg-primary rounded-md text-background hover:scale-105
+              hover:bg-white cursor-pointer"
+                    onClick={rotateSelectedClockwise}
+                  >
+                    <FaArrowRotateRight />
                   </button>
                 )}
               </div>

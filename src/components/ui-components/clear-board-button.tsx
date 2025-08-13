@@ -1,4 +1,4 @@
-// for testing: clears the board entirely
+// for testing: clears the board entirely - DEPRECATED
 
 import type { Dispatch, SetStateAction } from "react";
 import { BOARD_COLS, BOARD_ROWS } from "../../lib/constants/board-constants";
