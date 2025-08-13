@@ -40,28 +40,32 @@ export default function PieceContainer({
         if (pieceState.isOnBoard) return null;
 
         return (
-          <div className="relative">
+          <div className="relative" data-id={`piece-${pieceId}`}>
             {showSelectionUi && (
               <div className="absolute z-50 -translate-x-2 -translate-y-2 flex gap-2">
-                <button
-                  className="
+                {!ALL_PIECES[pieceId].disableRotation && (
+                  <button
+                    className="
                   p-2 bg-primary rounded-md text-background hover:scale-105
               hover:bg-white cursor-pointer"
-                  onClick={rotateSelectedClockwise}
-                >
-                  <FaArrowRotateRight />
-                </button>
-                <button
-                  className="
+                    onClick={rotateSelectedClockwise}
+                  >
+                    <FaArrowRotateRight />
+                  </button>
+                )}
+                {!ALL_PIECES[pieceId].disableFlip && (
+                  <button
+                    className="
                   p-2 bg-primary rounded-md text-background hover:scale-105
               hover:bg-white cursor-pointer"
-                  onClick={e => {
-                    e.stopPropagation();
-                    flipSelectedHorizontally();
-                  }}
-                >
-                  <FaArrowsAltH />
-                </button>
+                    onClick={e => {
+                      e.stopPropagation();
+                      flipSelectedHorizontally();
+                    }}
+                  >
+                    <FaArrowsAltH />
+                  </button>
+                )}
               </div>
             )}
             <DraggablePiece id={id} pieceId={pieceId} key={id}>
