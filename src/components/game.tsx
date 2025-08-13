@@ -74,31 +74,35 @@ export default function Board() {
 
   return (
     <DndContext onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
-      <div className="flex justify-between gap-8 items-end" style={{ width: CELL_SIZE * BOARD_COLS }}>
-        <div className="flex flex-col gap-2 items-left text-text">
-          <h1 className="text-4xl font-header font-normal">Color Puzzle Game</h1>
-          <p className="font-body">
-            Drag the pieces to fill the whole board. <br />
-            Come back daily for a new puzzle!
-          </p>
+      <div className="flex flex-col w-10/12 h-full justify-items-center items-center p-4 gap-4">
+        <div className="flex justify-between gap-8 items-end" style={{ width: CELL_SIZE * BOARD_COLS }}>
+          <div className="flex flex-col gap-2 items-left text-text">
+            <h1 className="text-4xl font-header font-normal">Color Puzzle Game</h1>
+            <p className="font-body">
+              Drag the pieces to fill the whole board. <br />
+              Come back daily for a new puzzle!
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 items-center">
+            <p className="text-text font-body flex items-center gap-1">
+              <FaHourglassHalf /> 0:00
+            </p>
+            <ClearBoardButton setBoard={setCurrentBoard} setPieceStatus={setPieceStatus} />
+          </div>
         </div>
-        <div className="flex flex-col gap-2 items-center">
-          <p className="text-text font-body flex items-center gap-1">
-            <FaHourglassHalf /> 0:00
-          </p>
-          <ClearBoardButton setBoard={setCurrentBoard} setPieceStatus={setPieceStatus} />
-        </div>
-      </div>
-      <div className="flex gap-x-8">
-        <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
-      </div>
 
-      <PieceContainer
-        isDragging={isDragging}
-        pieceStatus={pieceStatus}
-        setPieceStatus={setPieceStatus}
-        onPieceSelect={handlePieceSelect}
-      />
+        <div className="flex gap-x-8">
+          <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
+        </div>
+        <div className="pt-8">
+          <PieceContainer
+            isDragging={isDragging}
+            pieceStatus={pieceStatus}
+            setPieceStatus={setPieceStatus}
+            onPieceSelect={handlePieceSelect}
+          />
+        </div>
+      </div>
     </DndContext>
   );
 }

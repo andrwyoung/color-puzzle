@@ -92,8 +92,7 @@ export const ALL_PIECES: PieceCollection = {
             [[1,1], [0,0], [0,1]],
             [[1,0], [0,0], [0,1]],
             [[1,0], [1,1], [0,0]]
-        ],
-        disableFlip: true,
+        ]
     },
     7: {
         letter: 'G', // Light Blue Corner - 5
@@ -104,8 +103,7 @@ export const ALL_PIECES: PieceCollection = {
             [[2,2], [1,2], [0,0], [0,1], [0,2]],
             [[2,0], [1,0], [0,0], [0,1], [0,2]],
             [[2,0], [2,1], [2,2], [1,0], [0,0]],
-        ],
-        disableFlip: true,
+        ]
     },
     8: {
         letter: 'H', // Magenta ZigZag - 5
@@ -116,8 +114,7 @@ export const ALL_PIECES: PieceCollection = {
             [[2,2], [1,1], [1,2], [0,0], [0,1]],
             [[2,0], [1,0], [1,1], [0,1], [0,2]],
             [[2,1], [2,2], [1,0], [1,1], [0,0]],
-        ],
-        disableFlip: true,
+        ]
     },
     9: {
         letter: 'I', // Yellow U -5
@@ -128,8 +125,7 @@ export const ALL_PIECES: PieceCollection = {
             [[1,0], [1,2], [0,0], [0,1], [0,2]],
             [[2,0], [2,1], [1,0], [0,0], [0,1]],
             [[1,0], [1,1], [1,2], [0,0], [0,2]]
-        ],
-        disableFlip: true,
+        ]
     },
     10: {
         letter: 'J', // Purple Stick - 4
