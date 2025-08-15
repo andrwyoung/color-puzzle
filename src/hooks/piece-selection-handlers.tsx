@@ -1,5 +1,3 @@
-import type { PieceState, PieceStatusMap } from "../types/puzzle-types";
-
 export function useSelectionHandlers({
   selectedPieceId,
   setSelectedPieceId

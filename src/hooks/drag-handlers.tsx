@@ -147,7 +147,7 @@ export function useDragHandlers({
         ...prev,
         [pieceId]: newPieceState
       }));
-
+      setSelectedPieceId(null);
       setCurrentBoard(updatedBoard);
     }
 

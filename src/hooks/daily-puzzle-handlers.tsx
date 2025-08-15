@@ -72,7 +72,6 @@ export function useDailyPuzzle({
       if (pieceData) {
         const newPieceState: PieceState = {
           isOnBoard: true,
-          isSelected: false,
           orientation: pieceData.orientation,
           position: pieceData.position
         };
@@ -84,7 +83,6 @@ export function useDailyPuzzle({
     puzzle.removablePieces.forEach(pieceId => {
       const newPieceState: PieceState = {
         isOnBoard: false,
-        isSelected: false,
         orientation: ALL_PIECES[pieceId].base,
         position: null
       };
@@ -108,7 +106,6 @@ export function useDailyPuzzle({
         if (pieceData) {
           const newPieceState: PieceState = {
             isOnBoard: true,
-            isSelected: false,
             orientation: pieceData.orientation,
             position: pieceData.position
           };
@@ -120,7 +117,6 @@ export function useDailyPuzzle({
       dailyPuzzle.removablePieces.forEach(pieceId => {
         const newPieceState: PieceState = {
           isOnBoard: false,
-          isSelected: false,
           orientation: ALL_PIECES[pieceId].base,
           position: null
         };
