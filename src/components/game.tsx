@@ -35,6 +35,9 @@ export default function Board() {
     Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false))
   );
 
+  // for selected pieces
+  const [selectedPieceId, setSelectedPieceId] = useState<number | null>(null);
+
   // daily puzzle state
   const [dailyPuzzle, setDailyPuzzle] = useState<PuzzleData | null>(null);
   const [puzzleLoaded, setPuzzleLoaded] = useState(false);
@@ -47,12 +50,14 @@ export default function Board() {
     setCurrentBoard,
     pieceStatus,
     setPieceStatus,
-    setIsDragging
+    setIsDragging,
+    selectedPieceId,
+    setSelectedPieceId
   });
 
-  const { handlePieceSelect, handleDeselectAll } = useSelectionHandlers({
-    pieceStatus,
-    setPieceStatus
+  const { selectPiece, deselectAll, isSelected } = useSelectionHandlers({
+    selectedPieceId,
+    setSelectedPieceId
   });
 
   const { startDailyPuzzle, resetToTodaysPuzzle } = useDailyPuzzle({
@@ -77,7 +82,7 @@ export default function Board() {
       const dataId = target.closest("[data-id]")?.getAttribute("data-id") || "";
 
       if (!dataId.includes("piece-")) {
-        handleDeselectAll();
+        deselectAll();
       }
     };
 
@@ -85,7 +90,7 @@ export default function Board() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [handleDeselectAll]);
+  }, [deselectAll]);
 
   return (
     <DndContext onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
@@ -115,7 +120,8 @@ export default function Board() {
             isDragging={isDragging}
             pieceStatus={pieceStatus}
             setPieceStatus={setPieceStatus}
-            onPieceSelect={handlePieceSelect}
+            selectedPieceId={selectedPieceId}
+            onPieceSelect={selectPiece}
           />
         </div>
       </div>

@@ -14,15 +14,18 @@ import { Piece } from "./piece";
 export default function PieceContainer({
   pieceStatus,
   setPieceStatus,
+  selectedPieceId,
   onPieceSelect,
   isDragging
 }: {
   pieceStatus: PieceStatusMap;
   setPieceStatus: React.Dispatch<React.SetStateAction<PieceStatusMap>>;
-  onPieceSelect?: (pieceId: number) => void;
+  selectedPieceId: number | null;
+  onPieceSelect: (pieceId: number) => void;
   isDragging: boolean;
 }) {
   const { rotateSelectedClockwise, flipSelectedHorizontally, rotateSelectedCounterclockwise } = usePieceManipulation({
+    selectedPieceId,
     pieceStatus,
     setPieceStatus
   });
@@ -32,7 +35,8 @@ export default function PieceContainer({
       {Object.entries(ALL_PIECES).map(([id, piece]) => {
         const pieceId = +id;
         const pieceState = pieceStatus[pieceId];
-        const showSelectionUi = pieceState.isSelected && !isDragging;
+        const isSelected = (selectedPieceId === pieceId);
+        const showSelectionUi = isSelected && !isDragging;
 
         const currentOrientation = pieceState.orientation;
         const { width, height } = getBoundingBox(currentOrientation);
@@ -40,7 +44,7 @@ export default function PieceContainer({
         if (pieceState.isOnBoard) return null;
 
         return (
-          <div className="relative" data-id={`piece-${pieceId}`}>
+          <div className="relative" key={`piece-${pieceId}`}>
             {showSelectionUi && (
               <div className="absolute z-50 -translate-y-12 flex gap-2">
                 {!ALL_PIECES[pieceId].disableRotation && (
@@ -48,7 +52,11 @@ export default function PieceContainer({
                     className="
                   p-2 bg-primary rounded-md text-background hover:scale-105
               hover:bg-white cursor-pointer"
-                    onClick={rotateSelectedCounterclockwise}
+                    onMouseDown={e => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      rotateSelectedCounterclockwise();
+                    }}
                   >
                     <FaArrowRotateLeft />
                   </button>
@@ -58,8 +66,9 @@ export default function PieceContainer({
                     className="
                   p-2 bg-primary rounded-md text-background hover:scale-105
               hover:bg-white cursor-pointer"
-                    onClick={e => {
+                    onMouseDown={e => {
                       e.stopPropagation();
+                      e.preventDefault();
                       flipSelectedHorizontally();
                     }}
                   >
@@ -71,7 +80,11 @@ export default function PieceContainer({
                     className="
                   p-2 bg-primary rounded-md text-background hover:scale-105
               hover:bg-white cursor-pointer"
-                    onClick={rotateSelectedClockwise}
+                    onMouseDown={e => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      rotateSelectedClockwise();
+                    }}
                   >
                     <FaArrowRotateRight />
                   </button>
@@ -87,14 +100,14 @@ export default function PieceContainer({
                 }}
                 onMouseDown={e => {
                   e.stopPropagation();
-                  onPieceSelect?.(pieceId);
+                  onPieceSelect(pieceId);
                 }}
               >
                 <Piece
                   base={currentOrientation}
                   anchor={[0, 0]} // top-left anchor for layout
                   color={piece.color}
-                  isSelected={pieceState.isSelected}
+                  isSelected={isSelected}
                   isDragging={isDragging}
                 />
               </div>

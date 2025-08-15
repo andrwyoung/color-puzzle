@@ -1,41 +1,57 @@
 import type { PieceState, PieceStatusMap } from "../types/puzzle-types";
 
 export function useSelectionHandlers({
-  // pieceStatus,
-  setPieceStatus
+  selectedPieceId,
+  setSelectedPieceId
 }: {
-  pieceStatus?: PieceStatusMap;
-  setPieceStatus: React.Dispatch<React.SetStateAction<PieceStatusMap>>;
+  selectedPieceId: number | null;
+  setSelectedPieceId: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
-  function handlePieceSelect(pieceId: number) {
-    setPieceStatus(prev => {
-      return Object.fromEntries(
-        Object.entries(prev).map(([id, state]) => [
-          +id,
-          +id === pieceId ? { ...state, isSelected: true } : { ...state, isSelected: false }
-        ])
-      );
-    });
+
+  function selectPiece(pieceId: number) {
+    setSelectedPieceId(pieceId)
   }
 
-  function handleDeselectAll() {
-    setPieceStatus(prev => {
-      const newStatus: PieceStatusMap = {};
-
-      Object.entries(prev).forEach(([id, state]) => {
-        const newPieceState: PieceState = {
-          ...state,
-          isSelected: false
-        };
-        newStatus[+id] = newPieceState;
-      });
-
-      return newStatus;
-    });
+  function deselectAll() {
+    setSelectedPieceId(null);
   }
+
+  function isSelected(pieceId: number) {
+    return selectedPieceId === pieceId;
+  }
+
+  // DEPRECATED -- previous implementation
+
+  // function handlePieceSelect(pieceId: number) {
+  //   setPieceStatus(prev => {
+  //     return Object.fromEntries(
+  //       Object.entries(prev).map(([id, state]) => [
+  //         +id,
+  //         +id === pieceId ? { ...state, isSelected: true } : { ...state, isSelected: false }
+  //       ])
+  //     );
+  //   });
+  // }
+
+  // function handleDeselectAll() {
+  //   setPieceStatus(prev => {
+  //     const newStatus: PieceStatusMap = {};
+
+  //     Object.entries(prev).forEach(([id, state]) => {
+  //       const newPieceState: PieceState = {
+  //         ...state,
+  //         isSelected: false
+  //       };
+  //       newStatus[+id] = newPieceState;
+  //     });
+
+  //     return newStatus;
+  //   });
+  // }
 
   return {
-    handlePieceSelect,
-    handleDeselectAll
+    selectPiece,
+    deselectAll,
+    isSelected
   };
 }
