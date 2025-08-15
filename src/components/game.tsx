@@ -13,7 +13,6 @@ import { useSelectionHandlers } from "../hooks/piece-selection-handlers.tsx";
 import { useDailyPuzzle } from "../hooks/daily-puzzle-handlers.tsx";
 import PieceContainer from "./piece-container.tsx";
 import { CELL_SIZE } from "../lib/constants/ui-constants.ts";
-import { FaHourglassHalf } from "react-icons/fa6";
 
 export default function Board() {
   // this is the actual game board
@@ -56,7 +55,7 @@ export default function Board() {
     setPieceStatus
   });
 
-  const { startDailyPuzzle, resetToTodaysPuzzle, isPieceFixed } = useDailyPuzzle({
+  const { startDailyPuzzle, resetToTodaysPuzzle } = useDailyPuzzle({
     setCurrentBoard,
     pieceStatus,
     setPieceStatus,
