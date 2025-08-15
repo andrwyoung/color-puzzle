@@ -11,7 +11,9 @@ export function useDragHandlers({
   setHighlightedCells,
   pieceStatus,
   setPieceStatus,
-  setIsDragging
+  setIsDragging,
+  selectedPieceId,
+  setSelectedPieceId
 }: {
   currentBoard: BoardType;
   setCurrentBoard: React.Dispatch<React.SetStateAction<BoardType>>;
@@ -19,6 +21,8 @@ export function useDragHandlers({
   pieceStatus: PieceStatusMap;
   setPieceStatus: React.Dispatch<React.SetStateAction<PieceStatusMap>>;
   setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedPieceId: number | null;
+  setSelectedPieceId: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
   // where the mouse currently is
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
@@ -135,7 +139,6 @@ export function useDragHandlers({
       // update the piece placement metadata
       const newPieceState: PieceState = {
         isOnBoard: true,
-        isSelected: false,
         orientation: orientation,
         position: { row: rowIndex, col: colIndex }
       };
@@ -160,6 +163,7 @@ export function useDragHandlers({
     dragPosition,
     dragOffset,
     currentBoard,
+    selectedPieceId,
     setCurrentBoard,
     onDragStart,
     onDragMove,

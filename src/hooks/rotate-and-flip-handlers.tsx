@@ -2,22 +2,22 @@ import type { Coordinate, PieceStatusMap } from "../types/puzzle-types";
 import { rotateClockwise, rotateCounterclockwise, flipHorizontally, flipVertically } from "../lib/ui-helpers/get-oriented-coords";
 
 export function usePieceManipulation({ 
+    selectedPieceId,
     pieceStatus, 
     setPieceStatus 
 }: { 
+    selectedPieceId: number | null;
     pieceStatus: PieceStatusMap;
     setPieceStatus: React.Dispatch<React.SetStateAction<PieceStatusMap>>;
 }) {
 
-    const getSelectedPieceId = () => {
-        return Object.entries(pieceStatus).find(([, state]) => state.isSelected)?.[0];
-    }
-
     function transformSelectedPiece(transformFn: (coords: Coordinate[]) => Coordinate[]) {
-        const selectedPieceId = getSelectedPieceId();
-        if (!selectedPieceId) return;
+        if (selectedPieceId === null) {
+            console.log(selectedPieceId, "no transform because null")
+            return;
+        }
 
-        const pieceId = +selectedPieceId;
+        const pieceId = selectedPieceId;
         const currentOrientation = pieceStatus[pieceId].orientation;
         const newOrientation = transformFn(currentOrientation);
 
