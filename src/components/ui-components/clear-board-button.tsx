@@ -22,7 +22,6 @@ export default function ClearBoardButton({
           const baseOrientation: Coordinate[] = ALL_PIECES[+id].base;
           const newPieceState: PieceState = {
             isOnBoard: false,
-            isSelected: false,
             orientation: baseOrientation,
             position: null
           };

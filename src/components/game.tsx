@@ -55,7 +55,7 @@ export default function Board() {
     setSelectedPieceId
   });
 
-  const { selectPiece, deselectAll, isSelected } = useSelectionHandlers({
+  const { selectPiece, deselectAll } = useSelectionHandlers({
     selectedPieceId,
     setSelectedPieceId
   });
