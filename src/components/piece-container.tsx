@@ -3,6 +3,7 @@
 
 import { FaArrowsAltH } from "react-icons/fa";
 import { FaArrowRotateRight, FaArrowRotateLeft } from "react-icons/fa6";
+import { useDroppable } from "@dnd-kit/core";
 import { usePieceManipulation } from "../hooks/rotate-and-flip-handlers";
 import { ALL_PIECES } from "../lib/constants/piece-constants";
 import { CELL_SIZE } from "../lib/constants/ui-constants";
@@ -24,6 +25,11 @@ export default function PieceContainer({
   onPieceSelect: (pieceId: number) => void;
   isDragging: boolean;
 }) {
+
+  const { setNodeRef } = useDroppable({
+    id: "piece-container"
+  });
+
   const { rotateSelectedClockwise, flipSelectedHorizontally, rotateSelectedCounterclockwise } = usePieceManipulation({
     selectedPieceId,
     pieceStatus,
@@ -31,7 +37,10 @@ export default function PieceContainer({
   });
 
   return (
-    <div className="flex flex-wrap gap-4 p-4">
+    <div 
+      ref={setNodeRef}
+      className="flex flex-wrap gap-4 p-4"
+    >
       {Object.entries(ALL_PIECES).map(([id, piece]) => {
         const pieceId = +id;
         const pieceState = pieceStatus[pieceId];

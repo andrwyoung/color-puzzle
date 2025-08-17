@@ -113,7 +113,14 @@ export default function Board() {
         </div>
 
         <div className="flex gap-x-8">
-          <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
+          <GameBoard 
+            currentBoard={currentBoard} 
+            highlightedCells={highlightedCells} 
+            pieceStatus={pieceStatus}
+            selectedPieceId={selectedPieceId}
+            onPieceSelect={selectPiece}
+            isDragging={isDragging}
+          />
         </div>
         <div className="pt-8">
           <PieceContainer
