@@ -27,8 +27,11 @@ export default function PieceContainer({
 }) {
 
   const { setNodeRef } = useDroppable({
-    id: "piece-container"
+    id: "piece-container",
+    data: { type: "container" }
   });
+
+  console.log('PieceContainer render:', { id: "piece-container", ref: setNodeRef });
 
   const { rotateSelectedClockwise, flipSelectedHorizontally, rotateSelectedCounterclockwise } = usePieceManipulation({
     selectedPieceId,

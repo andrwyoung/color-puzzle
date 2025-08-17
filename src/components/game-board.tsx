@@ -27,10 +27,14 @@ export default function GameBoard({
     ? Object.entries(pieceStatus)
         .filter(([, state]) => state?.isOnBoard && state?.position)
         .map(([id, state]) => ({
+          id: id,
           pieceId: +id,
           state
         }))
     : [];
+
+  console.log('GameBoard render:', { isDragging, selectedPieceId, piecesOnBoard: piecesOnBoard.length });
+
 
   return (
     <div className="relative">
@@ -65,24 +69,25 @@ export default function GameBoard({
         </div>
       </DroppableBoard>
 
-      {piecesOnBoard.map(({ pieceId, state }) => {
+      {piecesOnBoard.map(({ id, pieceId, state }) => {
         const isSelected = selectedPieceId === pieceId;
+        const isBeingDragged = isDragging && isSelected;
 
         return (
           <div
             key={`board-piece-${pieceId}`}
-            className={`absolute pointer-events-none ${isSelected ? 'z-30' : 'z-20'}`}
+            className={`absolute ${isBeingDragged ? 'pointer-events-none z-50' : 'pointer-events-none'} ${isSelected ? 'z-30' : 'z-20'}`}
             style={{
               top: (state.position!.row * CELL_SIZE) + 11,
               left: (state.position!.col * CELL_SIZE) + 11,
             }}
           >
             <DraggablePiece 
-              id={`board-piece-${pieceId}`} 
+              id={id} 
               pieceId={pieceId}
             >
               <div
-                className={`relative w-full h-full pointer-events-auto ${isDragging ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                className={`relative w-full h-full ${isBeingDragged ? 'pointer-events-none' : 'pointer-events-auto'}`}
                 onMouseDown={e => {
                   e.stopPropagation();
                   onPieceSelect(pieceId);

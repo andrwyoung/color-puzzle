@@ -72,8 +72,7 @@ export function useDragHandlers({
 
   // Helper to place piece on board
   function placePieceOnBoard(pieceId: number, orientation: any[], rowIndex: number, colIndex: number) {
-    const updatedBoard = currentBoard.map(row => [...row]);
-    removePieceFromBoard(updatedBoard, pieceId)
+    const updatedBoard = removePieceFromBoard(currentBoard, pieceId)
 
     for (const [dy, dx] of orientation) {
       updatedBoard[rowIndex + dy][colIndex + dx] = pieceId;
@@ -95,6 +94,25 @@ export function useDragHandlers({
 
   // FUNCTION: called when a piece starts being dragged.
   function onDragStart(event: DragStartEvent) {
+    console.log("🚀 DRAG START:");
+    console.log("  - event.active.id:", event.active.id);
+    console.log("  - event.active.data:", event.active.data.current);
+
+    const pieceEl = document.querySelector(`[data-id='${event.active.id}']`) || event.activatorEvent.target as HTMLElement;
+    const boardEl = document.querySelector("[data-id='board']");
+    const containerEl = document.querySelector("[data-id='piece-container']");
+    const allDroppables = document.querySelectorAll('[data-dnd-kit-droppable]');
+
+    console.log('🔍 Droppables at drag start:', {
+      boardEl: !!boardEl,
+      containerEl: !!containerEl,
+      allDroppables: allDroppables.length,
+      boardHasDndAttr: boardEl?.hasAttribute('data-dnd-kit-droppable'),
+      containerHasDndAttr: containerEl?.hasAttribute('data-dnd-kit-droppable')
+    });
+
+    if (!pieceEl || !boardEl ) return;
+
     const mouseEvent = event.activatorEvent as MouseEvent;
     const pieceId = event.active.data.current?.pieceId;
 
@@ -108,11 +126,6 @@ export function useDragHandlers({
     // select the piece being dragged, and store the original state just in case
     setSelectedPieceId(pieceId)
     setOriginalPieceState({ ...pieceStatus[pieceId] })
-
-    const pieceEl = document.querySelector(`[data-id='${event.active.id}']`) || event.activatorEvent.target as HTMLElement;
-    const boardEl = document.querySelector("[data-id='board']");
-
-    if (!pieceEl || !boardEl) return;
 
     // grab the info about the piece you're holding an the board
     const pieceRect = pieceEl.getBoundingClientRect();
@@ -128,6 +141,12 @@ export function useDragHandlers({
     const dragX = mouseEvent.clientX - boardRect.left;
     const dragY = mouseEvent.clientY - boardRect.top;
 
+    console.log("🔍 DndKit context at start:", {
+      droppableContainers: document.querySelectorAll('[data-dnd-kit-droppable]').length,
+      boardElement: document.querySelector("[data-id='board']"),
+      boardHasDroppableAttr: document.querySelector("[data-id='board']")?.hasAttribute('data-dnd-kit-droppable')
+    })
+
     setIsDragging(true);
     setDragOffset({ x: offsetX, y: offsetY });
     setDragPosition({ x: dragX, y: dragY });
@@ -136,6 +155,27 @@ export function useDragHandlers({
   // FUNCTION: called continuously as the piece is dragged around.
   function onDragMove(event: DragMoveEvent) {
     const { over } = event;
+    console.log("🎯 onDragMove - over:", over?.id, "active:", event.active.id);
+
+    // Add detailed debugging
+    console.log("🔍 Event details:", {
+      overData: over?.data?.current,
+      overRect: over?.rect,
+      activatorEvent: event.activatorEvent,
+      delta: event.delta
+    });
+
+
+    const activeElement = document.querySelector(`[data-id='${event.active.id}']`);
+    const boardElement = document.querySelector(`[data-id='board']`);
+    const allDroppables = document.querySelectorAll('[data-dnd-kit-droppable]');
+    console.log("🔍 Elements check:", {
+      activeExists: !!activeElement,
+      boardExists: !!boardElement,
+      activeId: event.active.id,
+      droppableCount: allDroppables.length,
+      droppableIds: Array.from(allDroppables).map(el => el.getAttribute('data-dnd-kit-droppable-id'))
+    });
 
     // clear highlights if not over board
     if (!over || over.id !== "board") {
@@ -153,7 +193,7 @@ export function useDragHandlers({
     const pieceId = event.active.data.current?.pieceId;
     const currentPieceState = pieceStatus[pieceId] || originalPieceState;
 
-    if (!pieceId || !pieceStatus[pieceId]) return;
+    if (!pieceId || !currentPieceState) return;
     
     const orientation = currentPieceState.orientation;
 

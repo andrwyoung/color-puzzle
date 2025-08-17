@@ -9,13 +9,20 @@ type DroppableBoardProps = {
 };
 
 export function DroppableBoard({ id, children }: DroppableBoardProps) {
-  const { setNodeRef, isOver } = useDroppable({ id });
+  const { setNodeRef, isOver } = useDroppable({ 
+    id ,
+    data: {
+      type: "board"
+    }
+  });
+
+  console.log('DroppableBoard render:', { id, isOver, ref: setNodeRef });
 
   return (
     <div
       ref={setNodeRef}
       data-id={id}
-      className={`${isOver ? "bg-transparent" : "bg-transparent"} rounded-lg p-2 border-2 border-white`}
+      className={`${isOver ? "bg-transparent" : "bg-transparent"} rounded-lg p-2 border-2 border-white pointer-events-auto`}
     >
       {children}
     </div>
