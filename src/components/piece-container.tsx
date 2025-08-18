@@ -54,7 +54,7 @@ export default function PieceContainer({
 
         return (
           <div className="relative" key={`piece-${pieceId}`}>
-            {isSelected && (
+            {(isSelected && !isDragging) && (
               <div className="absolute z-50 -translate-y-12 flex gap-2">
                 {!ALL_PIECES[pieceId].disableRotation && (
                   <button
