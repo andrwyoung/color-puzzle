@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BOARD_ROWS, BOARD_COLS } from "../lib/constants/board-constants";
 import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { canPlacePiece } from "../lib/ui-helpers/can-place-piece";
+import { removePieceFromBoard } from "../lib/ui-helpers/board-utils";
 import type { BoardType, PieceState, PieceStatusMap } from "../types/puzzle-types";
 import type { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core";
 
@@ -28,6 +29,8 @@ export function useDragHandlers({
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   // the difference between where you clicked on the piece and the piece's top left
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  // storing the original state in case need to restore
+  const [originalPieceState, setOriginalPieceState] = useState<PieceState | null>(null);
 
   // HELPER: to deterimine which cell we're "over" depending on the mouse position
   function getDropCellFromEvent(event: DragMoveEvent | DragEndEvent) {
@@ -46,13 +49,72 @@ export function useDragHandlers({
     };
   }
 
-  // called when a piece starts being dragged.
-  function onDragStart(event: DragStartEvent) {
-    const mouseEvent = event.activatorEvent as MouseEvent;
+  function clearHighlights() {
+    setHighlightedCells(Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false)));
+  }
 
-    const pieceEl = document.querySelector(`[data-id='${event.active.id}']`);
+  // Helper to send piece to container
+  function sendPieceToContainer(pieceId: number, orientation: any[]) {
+    const newPieceState: PieceState = {
+      isOnBoard: false,
+      orientation: orientation,
+      position: null
+    };
+
+    setPieceStatus(prev => ({
+      ...prev,
+      [pieceId]: newPieceState
+    }));
+
+    const updatedBoard = removePieceFromBoard(currentBoard, pieceId);
+    setCurrentBoard(updatedBoard);
+  }
+
+  // Helper to place piece on board
+  function placePieceOnBoard(pieceId: number, orientation: any[], rowIndex: number, colIndex: number): BoardType {
+    const updatedBoard = removePieceFromBoard(currentBoard, pieceId)
+
+    for (const [dy, dx] of orientation) {
+      updatedBoard[rowIndex + dy][colIndex + dx] = pieceId;
+    }
+
+    const newPieceState: PieceState = {
+      isOnBoard: true,
+      orientation: orientation,
+      position: { row: rowIndex, col: colIndex }
+    };
+
+    setPieceStatus(prev => ({
+      ...prev,
+      [pieceId]: newPieceState
+    }));
+
+    setCurrentBoard(updatedBoard);
+
+    return updatedBoard
+  }
+
+  // FUNCTION: called when a piece starts being dragged.
+  function onDragStart(event: DragStartEvent) {
+
+    const pieceEl = document.querySelector(`[data-id='${event.active.id}']`) || event.activatorEvent.target as HTMLElement;
     const boardEl = document.querySelector("[data-id='board']");
-    if (!pieceEl || !boardEl) return;
+
+    if (!pieceEl || !boardEl ) return;
+
+    const mouseEvent = event.activatorEvent as MouseEvent;
+    const pieceId = event.active.data.current?.pieceId;
+
+    if (!pieceId || !pieceStatus[pieceId]) {
+      return;
+    }
+
+    const isFromBoard = pieceStatus[pieceId].isOnBoard;
+    console.log("piece from board:", isFromBoard, "piece id:", pieceId);
+
+    // select the piece being dragged, and store the original state just in case
+    setSelectedPieceId(pieceId)
+    setOriginalPieceState({ ...pieceStatus[pieceId] })
 
     // grab the info about the piece you're holding an the board
     const pieceRect = pieceEl.getBoundingClientRect();
@@ -73,19 +135,15 @@ export function useDragHandlers({
     setDragPosition({ x: dragX, y: dragY });
   }
 
-  // called continuously as the piece is dragged around.
+  // FUNCTION: called continuously as the piece is dragged around.
   function onDragMove(event: DragMoveEvent) {
     const { over } = event;
 
-    // if we're not currently dragging over the board, clear all highlights.
+    // clear highlights if not over board
     if (!over || over.id !== "board") {
       return clearHighlights();
     }
 
-    const boardEl = document.querySelector("[data-id='board']");
-    if (!boardEl) return;
-
-    // which cell are we in?
     const { rowIndex, colIndex } = getDropCellFromEvent(event);
 
     // guard against "out of bound" mouse positions
@@ -93,12 +151,19 @@ export function useDragHandlers({
       return clearHighlights();
     }
 
-    // create new highlighted cells array
+    // get current info
     const pieceId = event.active.data.current?.pieceId;
-    const orientation = pieceStatus[pieceId].orientation;
+    const currentPieceState = pieceStatus[pieceId] || originalPieceState;
+
+    if (!pieceId || !currentPieceState) return;
+    
+    const orientation = currentPieceState.orientation;
+
+    // use a temporary board for collision checking
+    let tempBoard = removePieceFromBoard(currentBoard, pieceId);
 
     // if a piece can't be placed, just exit
-    if (!canPlacePiece(currentBoard, orientation, rowIndex, colIndex)) {
+    if (!canPlacePiece(tempBoard, orientation, rowIndex, colIndex)) {
       return clearHighlights();
     }
 
@@ -110,53 +175,55 @@ export function useDragHandlers({
     setHighlightedCells(newHighlights);
   }
 
+  // FUNCTION: what to do when drag ends
   function onDragEnd(event: DragEndEvent) {
+    console.log("drag end:", event.over?.id);
     setIsDragging(false);
-
+    
+    const { over } = event;
     const pieceId = event.active.data.current?.pieceId;
-    const orientation = pieceStatus[pieceId].orientation;
+    const currentPieceState = pieceStatus[pieceId] || originalPieceState;
 
-    const boardEl = document.querySelector("[data-id='board']");
-
-    if (!pieceId || !boardEl) {
-      console.error("Missing drag drop data");
+    if (!pieceId || !currentPieceState) {
+      clearHighlights();
       return;
     }
 
-    // which cell are we in?
-    const { rowIndex, colIndex } = getDropCellFromEvent(event);
-    // check bounds again
-    const isPlaceable = canPlacePiece(currentBoard, orientation, rowIndex, colIndex);
+    const orientation = currentPieceState.orientation;
 
-    // only place the piece if it's valid
-    if (isPlaceable) {
-      const updatedBoard = currentBoard.map(row => [...row]); // clone
-      for (const [dy, dx] of orientation) {
-        updatedBoard[rowIndex + dy][colIndex + dx] = pieceId;
+    if (over?.id === "board") {
+
+      const { rowIndex, colIndex } = getDropCellFromEvent(event);
+
+      let tempBoard = removePieceFromBoard(currentBoard, pieceId);
+      const isPlaceable = canPlacePiece(tempBoard, orientation, rowIndex, colIndex);
+
+      // only place the piece if it's valid
+      if (isPlaceable) {
+        let updatedBoard = placePieceOnBoard(pieceId, orientation, rowIndex, colIndex);
+        setSelectedPieceId(null);
+        clearHighlights();
+        setOriginalPieceState(null);
+
+        console.log(updatedBoard)
+        return;
+      } else {
+        sendPieceToContainer(pieceId, orientation);
       }
-      console.log(updatedBoard);
-
-      // update the piece placement metadata
-      const newPieceState: PieceState = {
-        isOnBoard: true,
-        orientation: orientation,
-        position: { row: rowIndex, col: colIndex }
-      };
-
-      setPieceStatus(prev => ({
-        ...prev,
-        [pieceId]: newPieceState
-      }));
-      setSelectedPieceId(null);
-      setCurrentBoard(updatedBoard);
     }
 
-    // clear highlight regardless
-    clearHighlights();
-  }
+    // handle intentionally returned piece to container
+    if (over?.id === "piece-container") {
+      sendPieceToContainer(pieceId, orientation);
+    }
 
-  function clearHighlights() {
-    setHighlightedCells(Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(false)));
+    // edge cases
+    if (!over || (over.id !== "board" && over.id !== "piece-container")) {
+      sendPieceToContainer(pieceId, orientation);
+    }
+
+    clearHighlights();
+    setOriginalPieceState(null);
   }
 
   return {

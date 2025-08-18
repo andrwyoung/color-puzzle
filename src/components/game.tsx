@@ -78,6 +78,7 @@ export default function Board() {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+
       const target = e.target as HTMLElement;
       const dataId = target.closest("[data-id]")?.getAttribute("data-id") || "";
 
@@ -113,15 +114,22 @@ export default function Board() {
         </div>
 
         <div className="flex gap-x-8">
-          <GameBoard currentBoard={currentBoard} highlightedCells={highlightedCells} />
+          <GameBoard 
+            currentBoard={currentBoard} 
+            highlightedCells={highlightedCells} 
+            pieceStatus={pieceStatus}
+            selectedPieceId={selectedPieceId}
+            onPieceSelect={selectPiece}
+            isDragging={isDragging}
+          />
         </div>
         <div className="pt-8">
           <PieceContainer
-            isDragging={isDragging}
             pieceStatus={pieceStatus}
             setPieceStatus={setPieceStatus}
             selectedPieceId={selectedPieceId}
             onPieceSelect={selectPiece}
+            isDragging={isDragging}
           />
         </div>
       </div>

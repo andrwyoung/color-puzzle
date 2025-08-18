@@ -20,8 +20,7 @@ export function Piece({
   const cellSet = new Set(base.map(([r, c]) => `${r},${c}`));
   const hasCell = (r: number, c: number) => cellSet.has(`${r},${c}`);
 
-  const showSelectionUi = isSelected && !isDragging;
-  const borderColor = showSelectionUi ? "rgba(255,255,255,0.2)" : "transparent";
+  const borderColor = (isSelected && !isDragging) ? "rgba(255,255,255,0.2)" : "transparent";
 
   // this mess is here SIMPLY cause I wanted to make the piece bigger on hover lol
   // 1) bounding box in cell units
