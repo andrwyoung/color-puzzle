@@ -70,6 +70,23 @@ export default function Board() {
     setPuzzleLoaded
   });
 
+  // global keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      if (key === "r") {
+        e.preventDefault();
+        if (puzzleLoaded) resetToTodaysPuzzle();
+        else startDailyPuzzle();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [startDailyPuzzle, resetToTodaysPuzzle, puzzleLoaded]);
+
   // const { rotateSelectedClockwise, rotateSelectedCounterclockwise, flipSelectedHorizontally, flipSelectedVertically } =
   //   usePieceManipulation({
   //     pieceStatus,
@@ -92,7 +109,7 @@ export default function Board() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [deselectAll]);
+  }, [deselectAll, isDragging]);
 
   return (
     <DndContext onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
@@ -107,17 +124,21 @@ export default function Board() {
           </div>
           <div className="flex flex-col gap-2 items-center">
             {!puzzleLoaded ? (
-              <Button onClick={startDailyPuzzle}>Start Today's Puzzle</Button>
+              <Button onClick={startDailyPuzzle} title="Start Today's Puzzle (R)">
+                Start Today's Puzzle
+              </Button>
             ) : (
-              <Button onClick={resetToTodaysPuzzle}>Reset Puzzle</Button>
+              <Button onClick={resetToTodaysPuzzle} title="Reset Puzzle (R)">
+                Reset Puzzle
+              </Button>
             )}
           </div>
         </div>
 
         <div className="flex gap-x-8">
-          <GameBoard 
-            currentBoard={currentBoard} 
-            highlightedCells={highlightedCells} 
+          <GameBoard
+            currentBoard={currentBoard}
+            highlightedCells={highlightedCells}
             pieceStatus={pieceStatus}
             selectedPieceId={selectedPieceId}
             onPieceSelect={selectPiece}
@@ -129,6 +150,7 @@ export default function Board() {
             pieceStatus={pieceStatus}
             setPieceStatus={setPieceStatus}
             selectedPieceId={selectedPieceId}
+            deselectAll={deselectAll}
             onPieceSelect={selectPiece}
             isDragging={isDragging}
           />
