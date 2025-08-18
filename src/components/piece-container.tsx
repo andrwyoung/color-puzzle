@@ -31,8 +31,6 @@ export default function PieceContainer({
     data: { type: "container" }
   });
 
-  console.log('PieceContainer render:', { id: "piece-container", ref: setNodeRef });
-
   const { rotateSelectedClockwise, flipSelectedHorizontally, rotateSelectedCounterclockwise } = usePieceManipulation({
     selectedPieceId,
     pieceStatus,
@@ -48,7 +46,6 @@ export default function PieceContainer({
         const pieceId = +id;
         const pieceState = pieceStatus[pieceId];
         const isSelected = (selectedPieceId === pieceId);
-        const showSelectionUi = isSelected && !isDragging;
 
         const currentOrientation = pieceState.orientation;
         const { width, height } = getBoundingBox(currentOrientation);
@@ -57,7 +54,7 @@ export default function PieceContainer({
 
         return (
           <div className="relative" key={`piece-${pieceId}`}>
-            {showSelectionUi && (
+            {isSelected && (
               <div className="absolute z-50 -translate-y-12 flex gap-2">
                 {!ALL_PIECES[pieceId].disableRotation && (
                   <button

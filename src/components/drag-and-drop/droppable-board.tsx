@@ -16,8 +16,6 @@ export function DroppableBoard({ id, children }: DroppableBoardProps) {
     }
   });
 
-  console.log('DroppableBoard render:', { id, isOver, ref: setNodeRef });
-
   return (
     <div
       ref={setNodeRef}

@@ -5,6 +5,7 @@ import { ALL_PIECES } from "../lib/constants/piece-constants";
 import type { BoardType, PieceStatusMap } from "../types/puzzle-types";
 import { DroppableBoard } from "./drag-and-drop/droppable-board";
 import { DraggablePiece } from "./drag-and-drop/draggable-piece";
+import { getBoundingBox } from "../lib/ui-helpers/get-bounding-box";
 import { Piece } from "./piece";
 
 export default function GameBoard({
@@ -32,9 +33,6 @@ export default function GameBoard({
           state
         }))
     : [];
-
-  console.log('GameBoard render:', { isDragging, selectedPieceId, piecesOnBoard: piecesOnBoard.length });
-
 
   return (
     <div className="relative">
@@ -70,13 +68,15 @@ export default function GameBoard({
       </DroppableBoard>
 
       {piecesOnBoard.map(({ id, pieceId, state }) => {
-        const isSelected = selectedPieceId === pieceId;
-        const isBeingDragged = isDragging && isSelected;
+        const isSelected = (selectedPieceId === pieceId);
+
+        const currentOrientation =state.orientation;
+        const { width, height } = getBoundingBox(currentOrientation);
 
         return (
           <div
             key={`board-piece-${pieceId}`}
-            className={`absolute ${isBeingDragged ? 'pointer-events-none z-50' : 'pointer-events-none'} ${isSelected ? 'z-30' : 'z-20'}`}
+            className={`absolute ${isSelected ? 'pointer-events-none z-50' : 'pointer-events-none'} ${isSelected ? 'z-30' : 'z-20'}`}
             style={{
               top: (state.position!.row * CELL_SIZE) + 11,
               left: (state.position!.col * CELL_SIZE) + 11,
@@ -85,9 +85,14 @@ export default function GameBoard({
             <DraggablePiece 
               id={id} 
               pieceId={pieceId}
+              key={id}
             >
               <div
-                className={`relative w-full h-full ${isBeingDragged ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                className={`relative ${isSelected ? 'pointer-events-none' : (selectedPieceId != null ? 'pointer-events-none' : 'pointer-events-auto')} `}
+                style={{
+                  width: width * CELL_SIZE,
+                  height: height * CELL_SIZE
+                }}
                 onMouseDown={e => {
                   e.stopPropagation();
                   onPieceSelect(pieceId);
@@ -98,7 +103,7 @@ export default function GameBoard({
                   anchor={[0, 0]}
                   color={ALL_PIECES[pieceId].color}
                   isSelected={isSelected}
-                  isDragging={false}
+                  isDragging={isDragging}
                 />
               </div>
             </DraggablePiece>

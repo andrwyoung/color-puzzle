@@ -78,8 +78,7 @@ export default function Board() {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (isDragging ) return;
-      
+
       const target = e.target as HTMLElement;
       const dataId = target.closest("[data-id]")?.getAttribute("data-id") || "";
 
@@ -126,11 +125,11 @@ export default function Board() {
         </div>
         <div className="pt-8">
           <PieceContainer
-            isDragging={isDragging}
             pieceStatus={pieceStatus}
             setPieceStatus={setPieceStatus}
             selectedPieceId={selectedPieceId}
             onPieceSelect={selectPiece}
+            isDragging={isDragging}
           />
         </div>
       </div>
