@@ -13,6 +13,8 @@ import { useSelectionHandlers } from "../hooks/piece-selection-handlers.tsx";
 import { useDailyPuzzle } from "../hooks/daily-puzzle-handlers.tsx";
 import PieceContainer from "./piece-container.tsx";
 import { CELL_SIZE } from "../lib/constants/ui-constants.ts";
+import { FaHourglassHalf } from "react-icons/fa6";
+import { useTimer } from "../hooks/use-timer.tsx";
 
 export default function Board() {
   // this is the actual game board
@@ -60,6 +62,8 @@ export default function Board() {
     setSelectedPieceId
   });
 
+  const { getFormattedTime, startTimer, resetTimer } = useTimer();
+
   const { startDailyPuzzle, resetToTodaysPuzzle } = useDailyPuzzle({
     setCurrentBoard,
     pieceStatus,
@@ -67,7 +71,9 @@ export default function Board() {
     dailyPuzzle,
     setDailyPuzzle,
     puzzleLoaded,
-    setPuzzleLoaded
+    setPuzzleLoaded,
+    startTimer,
+    resetTimer
   });
 
   // const { rotateSelectedClockwise, rotateSelectedCounterclockwise, flipSelectedHorizontally, flipSelectedVertically } =
@@ -106,6 +112,11 @@ export default function Board() {
             </p>
           </div>
           <div className="flex flex-col gap-2 items-center">
+            <div className="text-primary flex items-center gap-1">
+              <FaHourglassHalf />
+              <p>{getFormattedTime()}</p>
+            </div>
+
             {!puzzleLoaded ? (
               <Button onClick={startDailyPuzzle}>Start Today's Puzzle</Button>
             ) : (
@@ -115,9 +126,9 @@ export default function Board() {
         </div>
 
         <div className="flex gap-x-8">
-          <GameBoard 
-            currentBoard={currentBoard} 
-            highlightedCells={highlightedCells} 
+          <GameBoard
+            currentBoard={currentBoard}
+            highlightedCells={highlightedCells}
             pieceStatus={pieceStatus}
             selectedPieceId={selectedPieceId}
             onPieceSelect={selectPiece}
