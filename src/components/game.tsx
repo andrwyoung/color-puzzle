@@ -78,6 +78,7 @@ export default function Board() {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      if (isDragging) return;
 
       const target = e.target as HTMLElement;
       const dataId = target.closest("[data-id]")?.getAttribute("data-id") || "";
