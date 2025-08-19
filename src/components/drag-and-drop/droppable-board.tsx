@@ -6,13 +6,15 @@ import React from "react";
 type DroppableBoardProps = {
   id: string;
   children: React.ReactNode;
+  cellSize: number;
 };
 
-export function DroppableBoard({ id, children }: DroppableBoardProps) {
+export function DroppableBoard({ id, children, cellSize }: DroppableBoardProps) {
   const { setNodeRef, isOver } = useDroppable({ 
     id ,
     data: {
-      type: "board"
+      type: "board",
+      cellSize
     }
   });
 

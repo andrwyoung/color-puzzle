@@ -1,6 +1,6 @@
 // this is the 5x11 board you see on the screen
 
-import { CELL_SIZE, DEFAULT_COLOR } from "../lib/constants/ui-constants";
+import { DEFAULT_COLOR } from "../lib/constants/ui-constants";
 import { ALL_PIECES } from "../lib/constants/piece-constants";
 import type { BoardType, PieceStatusMap } from "../types/puzzle-types";
 import { DroppableBoard } from "./drag-and-drop/droppable-board";
@@ -14,7 +14,8 @@ export default function GameBoard({
   pieceStatus,
   selectedPieceId,
   onPieceSelect,
-  isDragging
+  isDragging,
+  cellSize
 }: {
   currentBoard: BoardType;
   highlightedCells: boolean[][];
@@ -22,6 +23,7 @@ export default function GameBoard({
   selectedPieceId: number | null;
   onPieceSelect: (pieceId: number) => void;
   isDragging: boolean;
+  cellSize: number;
 }) {
   const piecesOnBoard = pieceStatus
     ? Object.entries(pieceStatus)
@@ -33,9 +35,11 @@ export default function GameBoard({
         }))
     : [];
 
+  const borderOffset = Math.max(1, Math.floor(cellSize * 0.15));
+
   return (
     <div className="relative">
-      <DroppableBoard id="board">
+      <DroppableBoard id="board" cellSize={cellSize}>
         <div className="grid grid-rows-5 grid-cols-11 w-fit">
           {currentBoard.map((row, rowIndex) =>
             row.map((_, colIndex) => {
@@ -45,8 +49,8 @@ export default function GameBoard({
                 <div
                   key={`${rowIndex}-${colIndex}`}
                   style={{
-                    width: CELL_SIZE,
-                    height: CELL_SIZE
+                    width: cellSize,
+                    height: cellSize
                   }}
                   className={`flex items-center justify-center ${
                     isHighlighted ? "border-2 border-white/15 rounded-sm" : ""
@@ -79,11 +83,11 @@ export default function GameBoard({
               isSelected ? "z-30" : "z-20"
             }`}
             style={{
-              top: state.position!.row * CELL_SIZE + 11,
-              left: state.position!.col * CELL_SIZE + 11
+              top: state.position!.row * cellSize + borderOffset,
+              left: state.position!.col * cellSize + borderOffset
             }}
           >
-            <DraggablePiece id={id} pieceId={pieceId} key={id}>
+            <DraggablePiece id={id} pieceId={pieceId} key={id} cellSize={cellSize}>
               <div
                 className={`relative ${
                   isSelected
@@ -93,8 +97,8 @@ export default function GameBoard({
                     : "pointer-events-auto"
                 } `}
                 style={{
-                  width: width * CELL_SIZE,
-                  height: height * CELL_SIZE
+                  width: width * cellSize,
+                  height: height * cellSize
                 }}
                 onMouseDown={e => {
                   e.stopPropagation();
@@ -107,6 +111,7 @@ export default function GameBoard({
                   color={ALL_PIECES[pieceId].color}
                   isSelected={isSelected}
                   isDragging={isDragging}
+                  cellSize={cellSize}
                 />
               </div>
             </DraggablePiece>

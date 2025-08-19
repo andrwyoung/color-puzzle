@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { BOARD_ROWS, BOARD_COLS } from "../lib/constants/board-constants";
-import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { canPlacePiece } from "../lib/ui-helpers/can-place-piece";
 import { removePieceFromBoard } from "../lib/ui-helpers/board-utils";
 import type { BoardType, Coordinate, PieceState, PieceStatusMap } from "../types/puzzle-types";
@@ -14,7 +13,8 @@ export function useDragHandlers({
   setPieceStatus,
   setIsDragging,
   selectedPieceId,
-  setSelectedPieceId
+  setSelectedPieceId,
+  cellSize
 }: {
   currentBoard: BoardType;
   setCurrentBoard: React.Dispatch<React.SetStateAction<BoardType>>;
@@ -24,6 +24,7 @@ export function useDragHandlers({
   setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
   selectedPieceId: number | null;
   setSelectedPieceId: React.Dispatch<React.SetStateAction<number | null>>;
+  cellSize: number;
 }) {
   // where the mouse currently is
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
@@ -44,8 +45,8 @@ export function useDragHandlers({
 
     // return which cell it lands in
     return {
-      colIndex: Math.floor(relX / CELL_SIZE),
-      rowIndex: Math.floor(relY / CELL_SIZE)
+      colIndex: Math.floor(relX / cellSize),
+      rowIndex: Math.floor(relY / cellSize)
     };
   }
 
@@ -126,8 +127,8 @@ export function useDragHandlers({
     const boardRect = boardEl.getBoundingClientRect();
 
     // how far the mouse is from the MIDDLE of the top-left "cell" of the piece
-    const cellCenterX = CELL_SIZE / 2;
-    const cellCenterY = CELL_SIZE / 2;
+    const cellCenterX = cellSize / 2;
+    const cellCenterY = cellSize / 2;
     const offsetX = mouseEvent.clientX - (pieceRect.left + cellCenterX);
     const offsetY = mouseEvent.clientY - (pieceRect.top + cellCenterY);
 
