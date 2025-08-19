@@ -7,6 +7,8 @@ import { DroppableBoard } from "./drag-and-drop/droppable-board";
 import { DraggablePiece } from "./drag-and-drop/draggable-piece";
 import { getBoundingBox } from "../lib/ui-helpers/get-bounding-box";
 import { Piece } from "./piece";
+import { useEffect, useRef, useState } from "react";
+import { BOARD_COLS, BOARD_ROWS } from "../lib/constants/board-constants";
 
 export default function GameBoard({
   currentBoard,
@@ -35,10 +37,28 @@ export default function GameBoard({
         }))
     : [];
 
-  const borderOffset = Math.max(1, Math.floor(cellSize * 0.15));
+  const boardRef = useRef<HTMLDivElement | null>(null);
+  const [boardSize, setBoardSize] = useState({ width: 0, height: 0 });
+
+  // measure the current board size responsively
+  useEffect(() => {
+    if (!boardRef.current) return;
+
+    const observer = new ResizeObserver(entries => {
+      const entry = entries[0];
+      if (entry) {
+        const { width, height } = entry.contentRect;
+        setBoardSize({ width, height });
+      }
+    });
+
+    observer.observe(boardRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="relative">
+    <div ref={boardRef} className="relative">
       <DroppableBoard id="board" cellSize={cellSize}>
         <div className="grid grid-rows-5 grid-cols-11 w-fit">
           {currentBoard.map((row, rowIndex) =>
@@ -83,8 +103,8 @@ export default function GameBoard({
               isSelected ? "z-30" : "z-20"
             }`}
             style={{
-              top: state.position!.row * cellSize + borderOffset,
-              left: state.position!.col * cellSize + borderOffset
+              top: (boardSize.height / BOARD_ROWS) * state.position!.row,
+              left: (boardSize.width / BOARD_COLS) * state.position!.col
             }}
           >
             <DraggablePiece id={id} pieceId={pieceId} key={id} cellSize={cellSize}>

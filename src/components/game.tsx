@@ -17,8 +17,7 @@ import { FaHourglassHalf } from "react-icons/fa6";
 import { useTimer } from "../hooks/use-timer.tsx";
 
 export default function Board() {
-
-  const { cellSize, scaleContainer } = useResponsiveCellSize()
+  const { cellSize, scaleContainer } = useResponsiveCellSize();
   // this is the actual game board
   const [currentBoard, setCurrentBoard] = useState<BoardType>(() =>
     Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(0))
@@ -123,16 +122,21 @@ export default function Board() {
   return (
     <DndContext onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
       <div className="flex flex-col w-full max-w-6xl mx-auto h-full justify-items-center items-center p-2 sm:p-4 gap-2 sm:gap-4 overflow-hidden">
-        <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-8 items-center sm:items-end w-full" style={{ maxWidth: cellSize * BOARD_COLS }}>
+        <div
+          className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-8 items-center sm:items-end w-full"
+          style={{ maxWidth: cellSize * BOARD_COLS }}
+        >
           <div className="flex flex-col gap-2 items-left text-text">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-header font-normal text-center sm:text-left">Color Puzzle Game</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-header font-normal text-center sm:text-left">
+              Color Puzzle Game
+            </h1>
             <p className="font-body text-sm sm:text-base text-center sm:text-left">
               Click pieces to flip and rotate. Drag to fill the whole board. <br />
               Come back daily for a new puzzle!
             </p>
           </div>
           <div className="flex flex-col gap-2 items-center">
-            <div className="ext-primary flex items-center gap-1 text-sm sm:text-base text-text">
+            <div className="text-primary flex items-center gap-1 text-sm font-body sm:text-base ">
               <FaHourglassHalf />
               <p>{getFormattedTime()}</p>
             </div>
@@ -149,7 +153,10 @@ export default function Board() {
           </div>
         </div>
 
-        <div className="flex justify-center w-full p-4" style={{ transform: scaleContainer, transformOrigin: 'center top' }}>
+        <div
+          className="flex justify-center w-full p-4"
+          style={{ transform: scaleContainer, transformOrigin: "center top" }}
+        >
           <div className="flex gap-x-4 sm:gap-x-8">
             <GameBoard
               currentBoard={currentBoard}
@@ -162,7 +169,10 @@ export default function Board() {
             />
           </div>
         </div>
-        <div className="pt-4 w-full flex justify-center" style={{ transform: scaleContainer, transformOrigin: 'center top' }}>
+        <div
+          className="pt-4 w-full flex justify-center"
+          style={{ transform: scaleContainer, transformOrigin: "center top" }}
+        >
           <PieceContainer
             pieceStatus={pieceStatus}
             setPieceStatus={setPieceStatus}
