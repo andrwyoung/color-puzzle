@@ -132,7 +132,7 @@ export default function Board() {
             </p>
           </div>
           <div className="flex flex-col gap-2 items-center">
-            <div className="ext-primary flex items-center gap-1 text-sm sm:text-base">
+            <div className="ext-primary flex items-center gap-1 text-sm sm:text-base text-text">
               <FaHourglassHalf />
               <p>{getFormattedTime()}</p>
             </div>
