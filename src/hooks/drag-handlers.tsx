@@ -3,7 +3,7 @@ import { BOARD_ROWS, BOARD_COLS } from "../lib/constants/board-constants";
 import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { canPlacePiece } from "../lib/ui-helpers/can-place-piece";
 import { removePieceFromBoard } from "../lib/ui-helpers/board-utils";
-import type { BoardType, PieceState, PieceStatusMap } from "../types/puzzle-types";
+import type { BoardType, Coordinate, PieceState, PieceStatusMap } from "../types/puzzle-types";
 import type { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core";
 
 export function useDragHandlers({
@@ -54,7 +54,7 @@ export function useDragHandlers({
   }
 
   // Helper to send piece to container
-  function sendPieceToContainer(pieceId: number, orientation: any[]) {
+  function sendPieceToContainer(pieceId: number, orientation: Coordinate[]) {
     const newPieceState: PieceState = {
       isOnBoard: false,
       orientation: orientation,
@@ -71,8 +71,13 @@ export function useDragHandlers({
   }
 
   // Helper to place piece on board
-  function placePieceOnBoard(pieceId: number, orientation: any[], rowIndex: number, colIndex: number): BoardType {
-    const updatedBoard = removePieceFromBoard(currentBoard, pieceId)
+  function placePieceOnBoard(
+    pieceId: number,
+    orientation: Coordinate[],
+    rowIndex: number,
+    colIndex: number
+  ): BoardType {
+    const updatedBoard = removePieceFromBoard(currentBoard, pieceId);
 
     for (const [dy, dx] of orientation) {
       updatedBoard[rowIndex + dy][colIndex + dx] = pieceId;
@@ -91,16 +96,16 @@ export function useDragHandlers({
 
     setCurrentBoard(updatedBoard);
 
-    return updatedBoard
+    return updatedBoard;
   }
 
   // FUNCTION: called when a piece starts being dragged.
   function onDragStart(event: DragStartEvent) {
-
-    const pieceEl = document.querySelector(`[data-id='${event.active.id}']`) || event.activatorEvent.target as HTMLElement;
+    const pieceEl =
+      document.querySelector(`[data-id='${event.active.id}']`) || (event.activatorEvent.target as HTMLElement);
     const boardEl = document.querySelector("[data-id='board']");
 
-    if (!pieceEl || !boardEl ) return;
+    if (!pieceEl || !boardEl) return;
 
     const mouseEvent = event.activatorEvent as MouseEvent;
     const pieceId = event.active.data.current?.pieceId;
@@ -113,8 +118,8 @@ export function useDragHandlers({
     console.log("piece from board:", isFromBoard, "piece id:", pieceId);
 
     // select the piece being dragged, and store the original state just in case
-    setSelectedPieceId(pieceId)
-    setOriginalPieceState({ ...pieceStatus[pieceId] })
+    setSelectedPieceId(pieceId);
+    setOriginalPieceState({ ...pieceStatus[pieceId] });
 
     // grab the info about the piece you're holding an the board
     const pieceRect = pieceEl.getBoundingClientRect();
@@ -156,11 +161,11 @@ export function useDragHandlers({
     const currentPieceState = pieceStatus[pieceId] || originalPieceState;
 
     if (!pieceId || !currentPieceState) return;
-    
+
     const orientation = currentPieceState.orientation;
 
     // use a temporary board for collision checking
-    let tempBoard = removePieceFromBoard(currentBoard, pieceId);
+    const tempBoard = removePieceFromBoard(currentBoard, pieceId);
 
     // if a piece can't be placed, just exit
     if (!canPlacePiece(tempBoard, orientation, rowIndex, colIndex)) {
@@ -179,7 +184,7 @@ export function useDragHandlers({
   function onDragEnd(event: DragEndEvent) {
     console.log("drag end:", event.over?.id);
     setIsDragging(false);
-    
+
     const { over } = event;
     const pieceId = event.active.data.current?.pieceId;
     const currentPieceState = pieceStatus[pieceId] || originalPieceState;
@@ -192,20 +197,19 @@ export function useDragHandlers({
     const orientation = currentPieceState.orientation;
 
     if (over?.id === "board") {
-
       const { rowIndex, colIndex } = getDropCellFromEvent(event);
 
-      let tempBoard = removePieceFromBoard(currentBoard, pieceId);
+      const tempBoard = removePieceFromBoard(currentBoard, pieceId);
       const isPlaceable = canPlacePiece(tempBoard, orientation, rowIndex, colIndex);
 
       // only place the piece if it's valid
       if (isPlaceable) {
-        let updatedBoard = placePieceOnBoard(pieceId, orientation, rowIndex, colIndex);
+        const updatedBoard = placePieceOnBoard(pieceId, orientation, rowIndex, colIndex);
         setSelectedPieceId(null);
         clearHighlights();
         setOriginalPieceState(null);
 
-        console.log(updatedBoard)
+        console.log(updatedBoard);
         return;
       } else {
         sendPieceToContainer(pieceId, orientation);

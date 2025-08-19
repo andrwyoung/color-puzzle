@@ -23,8 +23,7 @@ export default function GameBoard({
   onPieceSelect: (pieceId: number) => void;
   isDragging: boolean;
 }) {
-
-  const piecesOnBoard = pieceStatus 
+  const piecesOnBoard = pieceStatus
     ? Object.entries(pieceStatus)
         .filter(([, state]) => state?.isOnBoard && state?.position)
         .map(([id, state]) => ({
@@ -68,27 +67,31 @@ export default function GameBoard({
       </DroppableBoard>
 
       {piecesOnBoard.map(({ id, pieceId, state }) => {
-        const isSelected = (selectedPieceId === pieceId);
+        const isSelected = selectedPieceId === pieceId;
 
-        const currentOrientation =state.orientation;
+        const currentOrientation = state.orientation;
         const { width, height } = getBoundingBox(currentOrientation);
 
         return (
           <div
             key={`board-piece-${pieceId}`}
-            className={`absolute ${isSelected ? 'pointer-events-none z-50' : 'pointer-events-none'} ${isSelected ? 'z-30' : 'z-20'}`}
+            className={`absolute ${isSelected ? "pointer-events-none z-50" : "pointer-events-none"} ${
+              isSelected ? "z-30" : "z-20"
+            }`}
             style={{
-              top: (state.position!.row * CELL_SIZE) + 11,
-              left: (state.position!.col * CELL_SIZE) + 11,
+              top: state.position!.row * CELL_SIZE + 11,
+              left: state.position!.col * CELL_SIZE + 11
             }}
           >
-            <DraggablePiece 
-              id={id} 
-              pieceId={pieceId}
-              key={id}
-            >
+            <DraggablePiece id={id} pieceId={pieceId} key={id}>
               <div
-                className={`relative ${isSelected ? 'pointer-events-none' : (selectedPieceId != null ? 'pointer-events-none' : 'pointer-events-auto')} `}
+                className={`relative ${
+                  isSelected
+                    ? "pointer-events-none"
+                    : selectedPieceId != null
+                    ? "pointer-events-none"
+                    : "pointer-events-auto"
+                } `}
                 style={{
                   width: width * CELL_SIZE,
                   height: height * CELL_SIZE
@@ -110,7 +113,6 @@ export default function GameBoard({
           </div>
         );
       })}
-
     </div>
   );
 }
