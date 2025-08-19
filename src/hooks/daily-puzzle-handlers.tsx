@@ -12,7 +12,9 @@ export function useDailyPuzzle({
   dailyPuzzle, // ← Receive from Board
   setDailyPuzzle, // ← Receive from Board
   // puzzleLoaded,       // ← Receive from Board
-  setPuzzleLoaded // ← Receive from Board
+  setPuzzleLoaded, // ← Receive from Board
+  startTimer,
+  resetTimer
 }: {
   setCurrentBoard: React.Dispatch<React.SetStateAction<BoardType>>;
   pieceStatus: PieceStatusMap;
@@ -21,6 +23,8 @@ export function useDailyPuzzle({
   setDailyPuzzle: React.Dispatch<React.SetStateAction<PuzzleData | null>>;
   puzzleLoaded: boolean;
   setPuzzleLoaded: React.Dispatch<React.SetStateAction<boolean>>;
+  startTimer: () => void;
+  resetTimer: () => void;
 }) {
   // Find piece coordinates on board and return normalized orientation + position
   function findPiecePosition(
@@ -91,6 +95,7 @@ export function useDailyPuzzle({
 
     setPieceStatus(newPieceStatus);
     setPuzzleLoaded(true);
+    startTimer();
   }
 
   function resetToTodaysPuzzle() {
@@ -124,6 +129,7 @@ export function useDailyPuzzle({
       });
 
       setPieceStatus(newPieceStatus);
+      resetTimer(); // CAN REMOVE (depending on rules of the game)
     }
   }
 
