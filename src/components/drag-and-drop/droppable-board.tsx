@@ -6,13 +6,15 @@ import React from "react";
 type DroppableBoardProps = {
   id: string;
   children: React.ReactNode;
+  cellSize: number;
 };
 
-export function DroppableBoard({ id, children }: DroppableBoardProps) {
-  const { setNodeRef, isOver } = useDroppable({ 
-    id ,
+export function DroppableBoard({ id, children, cellSize }: DroppableBoardProps) {
+  const { setNodeRef, isOver } = useDroppable({
+    id,
     data: {
-      type: "board"
+      type: "board",
+      cellSize
     }
   });
 
@@ -20,7 +22,7 @@ export function DroppableBoard({ id, children }: DroppableBoardProps) {
     <div
       ref={setNodeRef}
       data-id={id}
-      className={`${isOver ? "bg-transparent" : "bg-transparent"} rounded-lg p-2 border-2 border-white pointer-events-auto`}
+      className={`${isOver ? "bg-transparent" : "bg-transparent"} rounded-lg ring-2 ring-white pointer-events-auto`}
     >
       {children}
     </div>

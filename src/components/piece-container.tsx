@@ -6,7 +6,6 @@ import { FaArrowRotateRight, FaArrowRotateLeft } from "react-icons/fa6";
 import { useDroppable } from "@dnd-kit/core";
 import { usePieceManipulation } from "../hooks/rotate-and-flip-handlers";
 import { ALL_PIECES } from "../lib/constants/piece-constants";
-import { CELL_SIZE } from "../lib/constants/ui-constants";
 import { getBoundingBox } from "../lib/ui-helpers/get-bounding-box";
 import type { PieceStatusMap } from "../types/puzzle-types";
 import { DraggablePiece } from "./drag-and-drop/draggable-piece";
@@ -19,7 +18,8 @@ export default function PieceContainer({
   selectedPieceId,
   deselectAll,
   onPieceSelect,
-  isDragging
+  isDragging,
+  cellSize
 }: {
   pieceStatus: PieceStatusMap;
   setPieceStatus: React.Dispatch<React.SetStateAction<PieceStatusMap>>;
@@ -27,6 +27,7 @@ export default function PieceContainer({
   deselectAll: () => void;
   onPieceSelect: (pieceId: number) => void;
   isDragging: boolean;
+  cellSize: number;
 }) {
   const { setNodeRef } = useDroppable({
     id: "piece-container",
@@ -67,7 +68,7 @@ export default function PieceContainer({
   }, [flipSelectedHorizontally, rotateSelectedClockwise, rotateSelectedCounterclockwise, deselectAll]);
 
   return (
-    <div ref={setNodeRef} className="flex flex-wrap gap-4 p-4">
+    <div ref={setNodeRef} className="flex flex-wrap gap-1 sm:gap-2 md:gap-4 p-1 sm:p-2 md:p-4 max-w-full justify-center">
       {Object.entries(ALL_PIECES).map(([id, piece]) => {
         const pieceId = +id;
         const pieceState = pieceStatus[pieceId];
@@ -81,15 +82,13 @@ export default function PieceContainer({
         return (
           <div className="relative" key={`piece-${pieceId}`}>
             {isSelected && !isDragging && (
-              <div className="absolute z-50 -translate-y-12 flex gap-2">
+              <div className="absolute z-50 -translate-y-8 sm:-translate-y-10 flex gap-1 sm:gap-2">
                 {!ALL_PIECES[pieceId].disableRotation && (
                   <button
                     aria-label="Rotate piece counterclockwise (←)"
                     title="Rotate piece counterclockwise (←)"
                     type="button"
-                    className="
-                  p-2 bg-primary rounded-md text-background hover:scale-105
-              hover:bg-white cursor-pointer"
+                    className="p-1 sm:p-2 bg-primary rounded-md text-background hover:scale-105 hover:bg-white cursor-pointer text-xs sm:text-sm"
                     onMouseDown={e => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -104,9 +103,7 @@ export default function PieceContainer({
                     type="button"
                     aria-label="Flip piece horizontally (↓ or F)"
                     title="Flip piece horizontally (↓ or F)"
-                    className="
-                  p-2 bg-primary rounded-md text-background hover:scale-105
-              hover:bg-white cursor-pointer"
+                    className="p-1 sm:p-2 bg-primary rounded-md text-background hover:scale-105 hover:bg-white cursor-pointer text-xs sm:text-sm"
                     onMouseDown={e => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -121,9 +118,7 @@ export default function PieceContainer({
                     type="button"
                     aria-label="Rotate piece clockwise (→)"
                     title="Rotate piece clockwise (→)"
-                    className="
-                  p-2 bg-primary rounded-md text-background hover:scale-105
-              hover:bg-white cursor-pointer"
+                    className="p-1 sm:p-2 bg-primary rounded-md text-background hover:scale-105 hover:bg-white cursor-pointer text-xs sm:text-sm"
                     onMouseDown={e => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -135,12 +130,12 @@ export default function PieceContainer({
                 )}
               </div>
             )}
-            <DraggablePiece id={id} pieceId={pieceId} key={id}>
+            <DraggablePiece id={id} pieceId={pieceId} key={id} cellSize={cellSize}>
               <div
                 className="relative"
                 style={{
-                  width: width * CELL_SIZE,
-                  height: height * CELL_SIZE
+                  width: width * cellSize,
+                  height: height * cellSize
                 }}
                 onMouseDown={e => {
                   e.stopPropagation();
@@ -153,6 +148,7 @@ export default function PieceContainer({
                   color={piece.color}
                   isSelected={isSelected}
                   isDragging={isDragging}
+                  cellSize={cellSize}
                 />
               </div>
             </DraggablePiece>

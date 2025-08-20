@@ -11,12 +11,13 @@ import type { BoardType, PieceStatusMap, PuzzleData } from "../types/puzzle-type
 import { useDragHandlers } from "../hooks/drag-handlers.tsx";
 import { useSelectionHandlers } from "../hooks/piece-selection-handlers.tsx";
 import { useDailyPuzzle } from "../hooks/daily-puzzle-handlers.tsx";
+import { useResponsiveCellSize } from "../hooks/useResponsiveCellSize.tsx";
 import PieceContainer from "./piece-container.tsx";
-import { CELL_SIZE } from "../lib/constants/ui-constants.ts";
 import { FaHourglassHalf } from "react-icons/fa6";
 import { useTimer } from "../hooks/use-timer.tsx";
 
 export default function Board() {
+  const { cellSize, scaleContainer } = useResponsiveCellSize();
   // this is the actual game board
   const [currentBoard, setCurrentBoard] = useState<BoardType>(() =>
     Array.from({ length: BOARD_ROWS }, () => Array(BOARD_COLS).fill(0))
@@ -54,7 +55,8 @@ export default function Board() {
     setPieceStatus,
     setIsDragging,
     selectedPieceId,
-    setSelectedPieceId
+    setSelectedPieceId,
+    cellSize
   });
 
   const { selectPiece, deselectAll } = useSelectionHandlers({
@@ -119,44 +121,58 @@ export default function Board() {
 
   return (
     <DndContext onDragStart={onDragStart} onDragMove={onDragMove} onDragEnd={onDragEnd}>
-      <div className="flex flex-col w-10/12 h-full justify-items-center items-center p-4 gap-4">
-        <div className="flex justify-between gap-8 items-end" style={{ width: CELL_SIZE * BOARD_COLS }}>
+      <div className="flex flex-col w-full max-w-6xl mx-auto h-full justify-items-center items-center p-2 sm:p-4 gap-2 sm:gap-4 overflow-hidden">
+        <div
+          className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-8 items-center sm:items-end w-full"
+          style={{ maxWidth: cellSize * BOARD_COLS }}
+        >
           <div className="flex flex-col gap-2 items-left text-text">
-            <h1 className="text-4xl font-header font-normal">Color Puzzle Game</h1>
-            <p className="font-body">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-header font-normal text-center sm:text-left">
+              Color Puzzle Game
+            </h1>
+            <p className="font-body text-sm sm:text-base text-center sm:text-left">
               Click pieces to flip and rotate. Drag to fill the whole board. <br />
               Come back daily for a new puzzle!
             </p>
           </div>
           <div className="flex flex-col gap-2 items-center">
-            <div className="text-primary flex items-center gap-1">
+            <div className="text-primary flex items-center gap-1 text-sm font-body sm:text-base ">
               <FaHourglassHalf />
               <p>{getFormattedTime()}</p>
             </div>
 
             {!puzzleLoaded ? (
               <Button onClick={startDailyPuzzle} title="Start Today's Puzzle (R)">
-                Start Today's Puzzle
+                <span className="text-sm sm:text-base">Start Today's Puzzle</span>
               </Button>
             ) : (
               <Button onClick={resetToTodaysPuzzle} title="Reset Puzzle (R)">
-                Reset Puzzle
+                <span className="text-sm sm:text-base">Reset Puzzle</span>
               </Button>
             )}
           </div>
         </div>
 
-        <div className="flex gap-x-8">
-          <GameBoard
-            currentBoard={currentBoard}
-            highlightedCells={highlightedCells}
-            pieceStatus={pieceStatus}
-            selectedPieceId={selectedPieceId}
-            onPieceSelect={selectPiece}
-            isDragging={isDragging}
-          />
+        <div
+          className="flex justify-center w-full p-4"
+          style={{ transform: scaleContainer, transformOrigin: "center top" }}
+        >
+          <div className="flex gap-x-4 sm:gap-x-8">
+            <GameBoard
+              currentBoard={currentBoard}
+              highlightedCells={highlightedCells}
+              pieceStatus={pieceStatus}
+              selectedPieceId={selectedPieceId}
+              onPieceSelect={selectPiece}
+              isDragging={isDragging}
+              cellSize={cellSize}
+            />
+          </div>
         </div>
-        <div className="pt-8">
+        <div
+          className="pt-4 w-full flex justify-center"
+          style={{ transform: scaleContainer, transformOrigin: "center top" }}
+        >
           <PieceContainer
             pieceStatus={pieceStatus}
             setPieceStatus={setPieceStatus}
@@ -164,6 +180,7 @@ export default function Board() {
             deselectAll={deselectAll}
             onPieceSelect={selectPiece}
             isDragging={isDragging}
+            cellSize={cellSize}
           />
         </div>
       </div>

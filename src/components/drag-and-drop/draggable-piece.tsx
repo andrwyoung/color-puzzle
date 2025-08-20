@@ -6,16 +6,19 @@ import { CSS } from "@dnd-kit/utilities";
 export function DraggablePiece({ 
   id, 
   pieceId, 
-  children 
+  children,
+  cellSize
 }: { 
   id: string; 
   pieceId: number; 
-  children: React.ReactNode 
+  children: React.ReactNode ;
+  cellSize: number;
 }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
     data: {
-      pieceId
+      pieceId,
+      cellSize
     }
   });
 
