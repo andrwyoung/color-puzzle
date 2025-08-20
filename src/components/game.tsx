@@ -64,7 +64,7 @@ export default function Board() {
     setSelectedPieceId
   });
 
-  const { getFormattedTime, startTimer, resetTimer } = useTimer();
+  const { getFormattedTime, startTimer } = useTimer();
 
   const { startDailyPuzzle, resetToTodaysPuzzle } = useDailyPuzzle({
     setCurrentBoard,
@@ -74,8 +74,7 @@ export default function Board() {
     setDailyPuzzle,
     puzzleLoaded,
     setPuzzleLoaded,
-    startTimer,
-    resetTimer
+    startTimer
   });
 
   // global keyboard shortcuts
