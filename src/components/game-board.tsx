@@ -123,7 +123,6 @@ export default function GameBoard({
                   height: height * cellSize
                 }}
                 onMouseDown={e => {
-                  if (isFixedPiece) return;
                   e.stopPropagation();
                   onPieceSelect(pieceId);
                 }}

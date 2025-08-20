@@ -130,7 +130,7 @@ export default function PieceContainer({
                 )}
               </div>
             )}
-            <DraggablePiece id={id} pieceId={pieceId} key={id} cellSize={cellSize}>
+            <DraggablePiece id={id} pieceId={pieceId} key={id} cellSize={cellSize} puzzleData={null}>
               <div
                 className="relative"
                 style={{
