@@ -2,7 +2,7 @@
 
 import { DEFAULT_COLOR } from "../lib/constants/ui-constants";
 import { ALL_PIECES } from "../lib/constants/piece-constants";
-import type { BoardType, PieceStatusMap } from "../types/puzzle-types";
+import type { BoardType, PieceStatusMap, PuzzleData } from "../types/puzzle-types";
 import { DroppableBoard } from "./drag-and-drop/droppable-board";
 import { DraggablePiece } from "./drag-and-drop/draggable-piece";
 import { getBoundingBox } from "../lib/ui-helpers/get-bounding-box";
@@ -17,7 +17,8 @@ export default function GameBoard({
   selectedPieceId,
   onPieceSelect,
   isDragging,
-  cellSize
+  cellSize,
+  puzzleData
 }: {
   currentBoard: BoardType;
   highlightedCells: boolean[][];
@@ -26,6 +27,7 @@ export default function GameBoard({
   onPieceSelect: (pieceId: number) => void;
   isDragging: boolean;
   cellSize: number;
+  puzzleData: PuzzleData | null;
 }) {
   const piecesOnBoard = pieceStatus
     ? Object.entries(pieceStatus)
@@ -107,7 +109,7 @@ export default function GameBoard({
               left: (boardSize.width / BOARD_COLS) * state.position!.col
             }}
           >
-            <DraggablePiece id={id} pieceId={pieceId} key={id} cellSize={cellSize}>
+            <DraggablePiece id={id} pieceId={pieceId} key={id} cellSize={cellSize} puzzleData={puzzleData}>
               <div
                 className={`relative ${
                   isSelected

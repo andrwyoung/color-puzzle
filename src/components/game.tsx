@@ -166,6 +166,7 @@ export default function Board() {
               onPieceSelect={selectPiece}
               isDragging={isDragging}
               cellSize={cellSize}
+              puzzleData={dailyPuzzle}
             />
           </div>
         </div>
